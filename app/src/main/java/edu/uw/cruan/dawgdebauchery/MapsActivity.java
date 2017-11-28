@@ -42,7 +42,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleApiClient mGoogleApiClient;
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     private LocationRequest mLocationRequest;
-    private LatLng mCurrentLocation;
     private String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     @Override
@@ -130,6 +129,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             return;
         }
         mRequestingLocationUpdates = true;
+        mMap.setMyLocationEnabled(true);
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (location == null) {  // If location services are off
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
@@ -141,13 +141,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     // Update map to given location
     private void handleNewLocation(Location location) {
-        double currentLatitude = location.getLatitude();
-        double currentLongitude = location.getLongitude();
-        LatLng latLng = new LatLng(currentLatitude, currentLongitude);
-        mCurrentLocation = latLng;
 
-        Log.v(TAG, mCurrentLocation + "");
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        //Place current location marker
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+        //move map camera
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,11));
     }
 
     @Override
