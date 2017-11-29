@@ -18,4 +18,9 @@
         completions."
     </string>
     <string name="login_register_text">No Account? Register</string>
+    <string name="title_activity_registration">RegistrationActivity</string>
+    <string name="title_activity_create_event">CreateEventActivity</string>
+    <string name="title_activity_host_tinder">HostTinderActivity</string>
+    <string name="title_activity_party_description">PartyDescriptionActivity</string>
+    <string name="title_activity_host_party">HostPartyActivity</string>
 </resources>
