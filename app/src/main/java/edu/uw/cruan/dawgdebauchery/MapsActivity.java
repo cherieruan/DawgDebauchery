@@ -2,6 +2,7 @@ package edu.uw.cruan.dawgdebauchery;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -23,6 +24,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 //TODO: Refactor code into service
 //TODO: prompt user for file name at beginning and put into filename field or sharedpreference
@@ -110,6 +113,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(47.655548, -122.303200))
+                .title("Test Party At UW!"));
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
+        {
+
+            @Override
+            public boolean onMarkerClick(Marker arg0) {
+                Intent intent = new Intent(MapsActivity.this, PartyDescriptionActivity.class);
+                startActivity(intent);
+                return true;
+            }
+
+        });
+
+        // TODO When we are building out the marker clicking system we have to build our own view and inflate it in place of the other view
     }
 
     @Override
@@ -144,6 +164,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //Place current location marker
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+
 
         //move map camera
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,11));
