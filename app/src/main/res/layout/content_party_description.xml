@@ -5,70 +5,62 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="edu.uw.cruan.dawgdebauchery.MainActivity"
-    tools:showIn="@layout/activity_main">
+    tools:context="edu.uw.cruan.dawgdebauchery.PartyDescriptionActivity"
+    tools:showIn="@layout/activity_party_description">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:padding="@dimen/activity_horizontal_margin"
-            android:text="Profile Name Here"/>
-
-        <android.support.v7.widget.AppCompatImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:padding="@dimen/activity_horizontal_margin"
-            android:src="@drawable/ic_launcher_background" />
-
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0px"
+            android:layout_weight="1"
             android:orientation="vertical">
 
-            <Button
-                android:id="@+id/main_view_map"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="View Map">
+                android:padding="@dimen/activity_horizontal_margin"
+                android:text="Date: 11/17/2017"/>
 
-            </Button>
-
-            <Button
-                android:id="@+id/main_view_events_list"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="View Events List">
+                android:padding="@dimen/activity_horizontal_margin"
+                android:text="Time: 9:00pm"/>
 
-            </Button>
-
-            <Button
-                android:id="@+id/main_create_event"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Create Event">
+                android:padding="@dimen/activity_horizontal_margin"
+                android:text="Address: 1234 Fake Address, Seattle, WA, 98105"/>
 
-            </Button>
-
-            <Button
-                android:id="@+id/main_edit_profile"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Edit Profile">
-
-            </Button>
+                android:padding="@dimen/activity_horizontal_margin"
+                android:text="Description"/>
 
         </LinearLayout>
+
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:map="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="1"
+            map:uiZoomControls="true"
+            map:cameraZoom="16"
+            tools:context="edu.uw.cruan.dawgdebauchery.MapsActivity"/>
+
 
     </LinearLayout>
 
