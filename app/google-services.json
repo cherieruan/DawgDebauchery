@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "878061492698",
+    "firebase_url": "https://dawgdebauchery.firebaseio.com",
+    "project_id": "dawgdebauchery",
+    "storage_bucket": "dawgdebauchery.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:878061492698:android:82fc14c88361b166",
+        "android_client_info": {
+          "package_name": "edu.uw.cruan.dawgdebauchery"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "878061492698-k1rdhomhvmdfke9u3d0af1j7i41r973k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQNwHnBRZaL1IcC10qNExlIFCY86RDsXA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

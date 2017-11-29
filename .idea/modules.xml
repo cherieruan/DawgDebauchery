@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/DawgDebauchery.iml" filepath="$PROJECT_DIR$/DawgDebauchery.iml" />
+      <module fileurl="file://C:\Users\Adminitrator\Documents\GitHub\DawgDebauchery\DawgDebauchery.iml" filepath="C:\Users\Adminitrator\Documents\GitHub\DawgDebauchery\DawgDebauchery.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://C:\Users\Adminitrator\Documents\GitHub\DawgDebauchery\app\app.iml" filepath="C:\Users\Adminitrator\Documents\GitHub\DawgDebauchery\app\app.iml" />
     </modules>
   </component>
 </project>
