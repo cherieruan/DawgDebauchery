@@ -1,3 +1,5 @@
+package edu.uw.cruan.dawgdebauchery;
+
 import java.util.Date;
 
 /**
