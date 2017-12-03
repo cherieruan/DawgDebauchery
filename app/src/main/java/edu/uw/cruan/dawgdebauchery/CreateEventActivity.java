@@ -1,5 +1,6 @@
 package edu.uw.cruan.dawgdebauchery;
 
+import android.app.DialogFragment;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.google.firebase.database.DatabaseReference;
@@ -44,36 +46,14 @@ public class CreateEventActivity extends AppCompatActivity {
         create_event_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int year = create_event_date.getYear();
-                int month = create_event_date.getMonth();
-                int date = create_event_date.getDayOfMonth();
-                Calendar formattedDate = Calendar.getInstance();
-                formattedDate.set(year, month, date);
 
                 String address = create_event_address.getText().toString();
-
-                String formattedTime = "";
-                int hour = create_event_time.getCurrentHour();
-                String sHour = "00";
-                if(hour < 10){
-                    sHour = "0"+hour;
-                } else {
-                    sHour = String.valueOf(hour);
-                }
-
-                int minute = create_event_time.getCurrentMinute();
-                String sMinute = "00";
-                if(minute < 10){
-                    sMinute = "0"+minute;
-                } else {
-                    sMinute = String.valueOf(minute);
-                }
-
-                formattedTime = sHour+":"+sMinute;
-
                 String description = create_event_description.getText().toString();
 
-                Event newEvent = new Event(address, formattedDate.getTime(), formattedTime, description);
+                TextView date = (TextView) findViewById(R.id.create_event_set_date_text_view);
+                TextView time = (TextView) findViewById(R.id.create_event_set_time_text_view);
+
+                Event newEvent = new Event(address, date.getText().toString(), time.getText().toString(), description);
                 mDatabase.child("events").push().setValue(newEvent); //add to the list
             }
         });
@@ -87,6 +67,16 @@ public class CreateEventActivity extends AppCompatActivity {
 //                        .setAction("Action", null).show();
 //            }
 //        });
+    }
+
+    public void onSetTimeButtonClicked(View v){
+        DialogFragment newFragment = new TimePickerFragment();
+        newFragment.show(getFragmentManager(),"TimePicker");
+    }
+
+    public void onSetDateButtonClicked(View v){
+        DialogFragment newFragment = new DatePickerFragment();
+        newFragment.show(getFragmentManager(),"DatePicker");
     }
 
 }

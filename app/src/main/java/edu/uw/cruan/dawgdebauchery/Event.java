@@ -10,11 +10,11 @@ public class Event {
 
     public String name;
     public String address;
-    public Date date;
+    public String date;
     public String time;
     public String description;
 
-    public Event(String address, Date date, String time, String description) {
+    public Event(String address, String date, String time, String description) {
         this.address = address;
         this.date = date;
         this.time = time;

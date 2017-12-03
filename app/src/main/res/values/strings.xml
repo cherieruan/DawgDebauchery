@@ -24,4 +24,7 @@
     <string name="title_activity_host_tinder">HostTinderActivity</string>
     <string name="title_activity_party_description">PartyDescriptionActivity</string>
     <string name="title_activity_host_party">HostPartyActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
