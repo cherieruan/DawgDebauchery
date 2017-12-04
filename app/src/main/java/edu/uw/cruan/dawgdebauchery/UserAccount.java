@@ -9,6 +9,7 @@ public class UserAccount {
     public String fName;
     public String lName;
     public int imgURL;
+    public Event event;
 
     public UserAccount(String f, String l, int url) {
         this.fName = f;

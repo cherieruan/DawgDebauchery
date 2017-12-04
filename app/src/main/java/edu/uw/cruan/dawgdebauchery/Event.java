@@ -16,16 +16,16 @@ public class Event {
     public String date;
     public String time;
     public String description;
-    public List<UserAccount> confirmedGuests;
-    public Queue<UserAccount> pendingGuests;
+    public List<String> confirmedGuests;
+    public Queue<String> pendingGuests;
 
     public Event(String address, String date, String time, String description) {
         this.address = address;
         this.date = date;
         this.time = time;
         this.description = description;
-        confirmedGuests = new ArrayList<UserAccount>();
-        pendingGuests = new LinkedList<UserAccount>();
+        confirmedGuests = new ArrayList<String>();
+        pendingGuests = new LinkedList<String>();
     }
 
     public String toString() {

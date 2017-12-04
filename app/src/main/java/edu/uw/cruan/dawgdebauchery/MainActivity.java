@@ -10,7 +10,10 @@ import android.view.View;
 import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
+
     private static final String TAG = "MainActivity";
+    private boolean hasEvent = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,13 +51,24 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        main_create_event.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, CreateEventActivity.class);
-                startActivity(intent);
-            }
-        });
+        if (hasEvent) {
+            main_create_event.setText("MANAGE YOUR EVENT");
+            main_create_event.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(MainActivity.this, HostPartyActivity.class);
+                    startActivity(intent);
+                }
+            });
+        } else {
+            main_create_event.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(MainActivity.this, CreateEventActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }
     }
 
 

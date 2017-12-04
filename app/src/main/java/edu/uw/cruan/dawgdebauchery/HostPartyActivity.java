@@ -7,16 +7,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class HostPartyActivity extends AppCompatActivity {
 
     private Event event;
+    private String userID;
+    private String eventKey;
+
+    //firebase!
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,21 +28,40 @@ public class HostPartyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_host_party);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        // DEV
-        setEvent();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
 
-        //Bundle extras = getIntent().getExtras();
+        Bundle extras = getIntent().getExtras();
 
-        //if (extras != null) {
-        //    String jsonQueue = extras.getString("event");
-        //    event = new Gson().fromJson(jsonQueue, Event.class);
+        if (extras != null) {
+            userID = extras.getString("userID");
+            // Get event key
+            mDatabase.child("users").child(userID).child("user_event").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    eventKey = (String) dataSnapshot.getValue();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {}
+            });
+
+            // Get event object
+            mDatabase.child("events").child(eventKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    event = (Event) dataSnapshot.getValue();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
             setInterface();
-        //}
+        }
     }
 
-    private void setEvent() {
+    /*private void setEvent() {
         event = new Event("address", "1/1/1997", "12:00", "LIT");
         // Set up prospective guests
         Queue<UserAccount> prospective = new LinkedList<>();
@@ -55,7 +78,7 @@ public class HostPartyActivity extends AppCompatActivity {
             guests.add(acc);
         }
         event.confirmedGuests = guests;
-    }
+    }*/
 
     private void setInterface() {
         // Event name
@@ -70,7 +93,7 @@ public class HostPartyActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(HostPartyActivity.this, ViewGuestsActivity.class);
-                intent.putExtra("event", new Gson().toJson(event));
+                intent.putExtra("eventKey", eventKey);
                 startActivity(intent);
             }
         });
@@ -79,7 +102,7 @@ public class HostPartyActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(HostPartyActivity.this, HostTinderActivity.class);
-                intent.putExtra("event", new Gson().toJson(event));
+                intent.putExtra("eventKey", eventKey);
                 startActivity(intent);
             }
         });
