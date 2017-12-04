@@ -18,12 +18,16 @@ public class Event {
     public String description;
     public List<String> confirmedGuests;
     public Queue<String> pendingGuests;
+    public boolean private_party;
 
-    public Event(String address, String date, String time, String description) {
+
+
+    public Event(String address, String date, String time, String description, boolean private_party) {
         this.address = address;
         this.date = date;
         this.time = time;
         this.description = description;
+        this.private_party = private_party;
         confirmedGuests = new ArrayList<String>();
         pendingGuests = new LinkedList<String>();
     }

@@ -28,4 +28,11 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_view_guests">ViewGuestsActivity</string>
+
+    <string name="privacy_prompt">Pick your party\'s privacy.</string>
+
+    <string-array name="public_private">
+        <item>Public</item>
+        <item>Private</item>
+    </string-array>
 </resources>

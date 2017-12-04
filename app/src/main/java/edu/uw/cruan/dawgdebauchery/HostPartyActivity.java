@@ -61,24 +61,6 @@ public class HostPartyActivity extends AppCompatActivity {
         }
     }
 
-    /*private void setEvent() {
-        event = new Event("address", "1/1/1997", "12:00", "LIT");
-        // Set up prospective guests
-        Queue<UserAccount> prospective = new LinkedList<>();
-        for (int i = 0; i < 5; i++) {
-            UserAccount acc = new UserAccount(i + "", i + "", R.drawable.ic_favorite_black_24dp);
-            prospective.add(acc);
-        }
-        event.pendingGuests = prospective;
-
-        // Set up curr guests
-        List<UserAccount> guests = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            UserAccount acc = new UserAccount(i + "f", i + "l", R.drawable.ic_favorite_black_24dp);
-            guests.add(acc);
-        }
-        event.confirmedGuests = guests;
-    }*/
 
     private void setInterface() {
         // Event name
