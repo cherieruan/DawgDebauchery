@@ -16,4 +16,8 @@ public class UserAccount {
         this.imgURL = url;
     }
 
+    public String toString() {
+        return fName + " " + lName;
+    }
+
 }

@@ -54,17 +54,6 @@ public class HostTinderActivity extends AppCompatActivity {
             displayUser();
         }
 
-
-    }
-
-    private void populateAttendees() {
-        UserAccount acc1 = new UserAccount("Taylor", "Swift", R.drawable.ic_audiotrack_black_24dp);
-        UserAccount acc2 = new UserAccount("Taylor1", "Swift2", R.drawable.ic_brightness_low_black_24dp);
-        UserAccount acc3 = new UserAccount("Taylor2", "Swift3", R.drawable.ic_favorite_black_24dp);
-
-        pending.add(acc1);
-        pending.add(acc2);
-        pending.add(acc3);
     }
 
     private void displayUser() {
@@ -83,6 +72,12 @@ public class HostTinderActivity extends AppCompatActivity {
     private void displayEmptyPage() {
         TextView txtView = (TextView) findViewById(R.id.invite_text);
         txtView.setText("No pending guests.");
+        ImageView imgView = (ImageView) findViewById(R.id.user_img);
+        imgView.setImageResource(0);
+        Button noButton = (Button) findViewById(R.id.no_button);
+        noButton.setVisibility(View.GONE);
+        Button yesButton = (Button) findViewById(R.id.yes_button);
+        yesButton.setVisibility(View.GONE);
     }
 
 }

@@ -9,6 +9,11 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
 public class HostPartyActivity extends AppCompatActivity {
 
     private Event event;
@@ -20,16 +25,36 @@ public class HostPartyActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Bundle extras = getIntent().getExtras();
+        // DEV
+        setEvent();
 
-        // DEBUGGING PURPOSES
-        event = new Event("5039 18th Ave NE", "1/1/1997", "7:00PM", "LIT");
+
+        //Bundle extras = getIntent().getExtras();
 
         //if (extras != null) {
-            //String jsonQueue = extras.getString("event");
-            //event = new Gson().fromJson(jsonQueue, Event.class);
+        //    String jsonQueue = extras.getString("event");
+        //    event = new Gson().fromJson(jsonQueue, Event.class);
             setInterface();
         //}
+    }
+
+    private void setEvent() {
+        event = new Event("address", "1/1/1997", "12:00", "LIT");
+        // Set up prospective guests
+        Queue<UserAccount> prospective = new LinkedList<>();
+        for (int i = 0; i < 5; i++) {
+            UserAccount acc = new UserAccount(i + "", i + "", R.drawable.ic_favorite_black_24dp);
+            prospective.add(acc);
+        }
+        event.pendingGuests = prospective;
+
+        // Set up curr guests
+        List<UserAccount> guests = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            UserAccount acc = new UserAccount(i + "f", i + "l", R.drawable.ic_favorite_black_24dp);
+            guests.add(acc);
+        }
+        event.confirmedGuests = guests;
     }
 
     private void setInterface() {
@@ -45,7 +70,7 @@ public class HostPartyActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(HostPartyActivity.this, ViewGuestsActivity.class);
-                intent.putExtra("attendees", new Gson().toJson(event.confirmedGuests));
+                intent.putExtra("event", new Gson().toJson(event));
                 startActivity(intent);
             }
         });
