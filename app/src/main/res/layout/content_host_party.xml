@@ -8,10 +8,47 @@
     tools:context="edu.uw.cruan.dawgdebauchery.HostPartyActivity"
     tools:showIn="@layout/activity_host_party">
 
-    <ListView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-    </ListView>
+        <Button
+            android:id="@+id/main_view_map"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Edit Party Details">
+
+        </Button>
+
+        <Button
+            android:id="@+id/main_view_events_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="View Events List">
+
+        </Button>
+
+        <Button
+            android:id="@+id/main_create_event"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Create Event">
+
+        </Button>
+
+        <Button
+            android:id="@+id/main_edit_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Edit Profile">
+
+        </Button>
+
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

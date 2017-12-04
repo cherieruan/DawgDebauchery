@@ -8,4 +8,52 @@
     tools:context="edu.uw.cruan.dawgdebauchery.HostTinderActivity"
     tools:showIn="@layout/activity_host_tinder">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingTop="30dp">
+
+        <TextView
+            android:id="@+id/invite_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="30sp"
+            android:gravity="center_horizontal"
+            android:text="Invite Guest?"
+            />
+
+        <ImageView
+            android:id="@+id/user_img"
+            android:layout_width="328dp"
+            android:layout_height="295dp"
+            android:layout_gravity="center"
+            android:padding="30dp"
+            android:src="@drawable/ic_launcher_background" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/no_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="65dp"
+                android:text="No" />
+
+            <Button
+                android:id="@+id/yes_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginEnd="54dp"
+                android:text="Yes" />
+        </RelativeLayout>
+    </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>
