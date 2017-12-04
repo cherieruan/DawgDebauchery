@@ -6,4 +6,6 @@
     <dimen name="login_image_padding">64dp</dimen>
     <dimen name="edit_text_field_width_default">256dp</dimen>
     <dimen name="activity_default_padding">16dp</dimen>
+    <dimen name="activity_default_button_margin">8dp</dimen>
+    <dimen name="box_size">50dp</dimen>
 </resources>
