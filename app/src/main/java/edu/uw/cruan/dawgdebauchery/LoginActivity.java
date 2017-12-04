@@ -93,9 +93,7 @@ public class LoginActivity extends AppCompatActivity  {
         registerButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this, RegistrationActivity.class);
-                intent.putExtra(EMAIL_EXTRA_KEY, mEmailView.getText().toString());
-                startActivity(intent);
+                openRegistration();
             }
         });
 
@@ -112,7 +110,11 @@ public class LoginActivity extends AppCompatActivity  {
         mProgressView = findViewById(R.id.login_progress);
     }
 
-
+    private void openRegistration() {
+        Intent intent = new Intent(LoginActivity.this, RegistrationActivity.class);
+        intent.putExtra(EMAIL_EXTRA_KEY, mEmailView.getText().toString());
+        startActivity(intent);
+    }
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -127,6 +129,7 @@ public class LoginActivity extends AppCompatActivity  {
         boolean validPassword = isPasswordValid(password);
 
         if(validEmail && validPassword) {
+            Log.v(TAG, "Email & Password valid, logging in");
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -143,6 +146,24 @@ public class LoginActivity extends AppCompatActivity  {
                                 Exception e = task.getException();
                                 if(e instanceof FirebaseAuthInvalidUserException) {
                                     //have them create an account
+                                    Log.v(TAG, "Invalid user");
+                                    final Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content),
+                                            "Account not found. Would you like to create an account?", Snackbar.LENGTH_LONG);
+                                    snackbar.setAction("Create account", new View.OnClickListener() {
+
+                                        @Override
+                                        public void onClick(View view) {
+                                            openRegistration();
+                                        }
+                                    });
+                                    /*
+                                    snackbar.setAction("Close", new OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            snackbar.dismiss();
+                                        }
+                                    }); */
+                                    snackbar.show();
 
                                 }else {
                                     // If sign in fails, display a message to the user.
@@ -153,6 +174,10 @@ public class LoginActivity extends AppCompatActivity  {
                             }
                         }
                     });
+        }else if(!validEmail){
+            Toast.makeText(this, "Invalid Email, must be a '@uw.edu' domain", Toast.LENGTH_LONG).show();
+        }else if(!validPassword) {
+            Toast.makeText(this, "Invalid password: must be at least 8 characters long", Toast.LENGTH_LONG).show();
         }
 
     }

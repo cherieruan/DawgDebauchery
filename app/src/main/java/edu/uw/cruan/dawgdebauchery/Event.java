@@ -20,8 +20,6 @@ public class Event {
     public Queue<String> pendingGuests;
     public boolean private_party;
 
-
-
     public Event(String address, String date, String time, String description, boolean private_party) {
         this.address = address;
         this.date = date;
