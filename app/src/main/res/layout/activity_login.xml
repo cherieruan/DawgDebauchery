@@ -79,13 +79,13 @@
                 android:text="@string/action_sign_in_short"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/login_register_text"
+            <Button
+                android:id="@+id/login_register_button"
                 android:text="@string/login_register_text"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_gravity="center">
-            </TextView>
+            </Button>
 
         </LinearLayout>
     </ScrollView>

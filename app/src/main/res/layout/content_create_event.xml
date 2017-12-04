@@ -14,21 +14,36 @@
         android:padding="16dp"
         android:orientation="vertical">
 
-        <EditText
+        <TextView
+            android:id="@+id/create_event_set_time_text_view"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            />
+        <Button
+            android:id="@+id/create_event_set_time_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:hint="Date"
-            android:width="@dimen/edit_text_field_width_default"/>
+            android:onClick="onSetTimeButtonClicked"
+            android:text="Set Time"
+            android:layout_below="@id/create_event_set_time_text_view"
+            />
 
-        <EditText
+        <TextView
+            android:id="@+id/create_event_set_date_text_view"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            />
+        <Button
+            android:id="@+id/create_event_set_date_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:hint="Time"
-            android:width="@dimen/edit_text_field_width_default"/>
+            android:onClick="onSetDateButtonClicked"
+            android:text="Set Date"
+            android:layout_below="@id/create_event_set_date_text_view"
+            />
 
         <EditText
+            android:id="@+id/create_event_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -36,6 +51,7 @@
             android:width="@dimen/edit_text_field_width_default"/>
 
         <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/create_event_privacy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -44,6 +60,7 @@
         </android.support.v7.widget.AppCompatSpinner>
 
         <EditText
+            android:id="@+id/create_event_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -51,10 +68,11 @@
             android:width="@dimen/edit_text_field_width_default"/>
 
         <Button
+            android:id="@+id/create_event_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Create My Event"/>
+            android:text="Next"/>
 
     </LinearLayout>
 
