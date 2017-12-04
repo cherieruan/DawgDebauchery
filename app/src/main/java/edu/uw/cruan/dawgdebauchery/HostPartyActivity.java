@@ -39,7 +39,7 @@ public class HostPartyActivity extends AppCompatActivity {
     }
 
     private void setEvent() {
-        event = new Event("address", "1/1/1997", "12:00", "LIT");
+        event = new Event("address", "1/1/1997", "12:00", "LIT", false);
         // Set up prospective guests
         Queue<UserAccount> prospective = new LinkedList<>();
         for (int i = 0; i < 5; i++) {

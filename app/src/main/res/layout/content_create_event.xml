@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="@dimen/activity_default_padding"
+    android:fillViewport="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="edu.uw.cruan.dawgdebauchery.CreateEventActivity"
     tools:showIn="@layout/activity_create_event">
@@ -14,66 +17,100 @@
         android:padding="16dp"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/create_event_set_time_text_view"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            />
-        <Button
-            android:id="@+id/create_event_set_time_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onSetTimeButtonClicked"
-            android:text="Set Time"
-            android:layout_below="@id/create_event_set_time_text_view"
-            />
+            android:layout_marginBottom="@dimen/activity_default_padding">
 
-        <TextView
-            android:id="@+id/create_event_set_date_text_view"
+            <TextView
+                android:id="@+id/create_event_set_time_text_view"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_toRightOf="@id/create_event_set_time_button"
+                android:layout_centerInParent="true"
+                android:textStyle="bold"
+                />
+            <Button
+                android:id="@+id/create_event_set_time_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onSetTimeButtonClicked"
+                android:text="Set Time"
+                />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            />
-        <Button
-            android:id="@+id/create_event_set_date_button"
-            android:layout_width="wrap_content"
+            android:layout_marginBottom="@dimen/activity_default_padding">
+
+            <TextView
+                android:id="@+id/create_event_set_date_text_view"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_toRightOf="@id/create_event_set_date_button"
+                android:layout_centerInParent="true"
+                android:textStyle="bold"
+                />
+            <Button
+                android:id="@+id/create_event_set_date_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onSetDateButtonClicked"
+                android:text="Set Date"
+                />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="onSetDateButtonClicked"
-            android:text="Set Date"
-            android:layout_below="@id/create_event_set_date_text_view"
-            />
+            android:layout_marginBottom="@dimen/activity_default_padding">
+
+            <TextView
+                android:id="@+id/create_event_privacy_label"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="Party Privacy: "
+                android:textStyle="bold"
+                />
+
+            <Spinner
+                android:id="@+id/create_event_privacy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/create_event_privacy_label"
+                android:entries="@array/public_private"
+                android:prompt="@string/privacy_prompt">
+
+            </Spinner>
+
+        </RelativeLayout>
 
         <EditText
             android:id="@+id/create_event_address"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/activity_default_padding"
             android:hint="Address"
             android:width="@dimen/edit_text_field_width_default"/>
 
-        <android.support.v7.widget.AppCompatSpinner
-            android:id="@+id/create_event_privacy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:width="@dimen/edit_text_field_width_default">
-
-        </android.support.v7.widget.AppCompatSpinner>
-
         <EditText
             android:id="@+id/create_event_description"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:hint="Description"
             android:width="@dimen/edit_text_field_width_default"/>
 
-        <Button
-            android:id="@+id/create_event_next"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Next"/>
-
     </LinearLayout>
+
+    <Button
+        android:id="@+id/create_event_next"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="Create Event"/>
 
 </android.support.constraint.ConstraintLayout>

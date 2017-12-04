@@ -1,8 +1,10 @@
 package edu.uw.cruan.dawgdebauchery;
 
 import android.app.DialogFragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
@@ -43,8 +45,20 @@ public class CreateEventActivity extends AppCompatActivity {
                 TextView date = (TextView) findViewById(R.id.create_event_set_date_text_view);
                 TextView time = (TextView) findViewById(R.id.create_event_set_time_text_view);
 
-                Event newEvent = new Event(address, date.getText().toString(), time.getText().toString(), description);
+                AppCompatSpinner spinner = (AppCompatSpinner) findViewById(R.id.create_event_privacy);
+
+                boolean privacy;
+                if (spinner.getSelectedItem().toString() == "Private") {
+                    privacy = true;
+                } else {
+                    privacy = false;
+                }
+
+                Event newEvent = new Event(address, date.getText().toString(), time.getText().toString(), description, privacy);
                 mDatabase.child("events").push().setValue(newEvent); //add to the list
+
+                Intent intent = new Intent(CreateEventActivity.this, MainActivity.class);
+                startActivity(intent);
             }
         });
 
