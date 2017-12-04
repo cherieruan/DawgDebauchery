@@ -1,13 +1,26 @@
 package edu.uw.cruan.dawgdebauchery;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class HostPartyActivity extends AppCompatActivity {
+
+    private Event event;
+    private String userID;
+    private String eventKey;
+
+    //firebase!
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -15,13 +28,64 @@ public class HostPartyActivity extends AppCompatActivity {
         setContentView(R.layout.activity_host_party);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+
+        Bundle extras = getIntent().getExtras();
+
+        if (extras != null) {
+            userID = extras.getString("userID");
+            // Get event key
+            mDatabase.child("users").child(userID).child("user_event").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    eventKey = (String) dataSnapshot.getValue();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {}
+            });
+
+            // Get event object
+            mDatabase.child("events").child(eventKey).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    event = (Event) dataSnapshot.getValue();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+            setInterface();
+        }
+    }
+
+
+    private void setInterface() {
+        // Event name
+        TextView eventName = (TextView) findViewById(R.id.event_name);
+        eventName.setText(event.name);
+
+        // Event description
+        TextView descr = (TextView) findViewById(R.id.event_description);
+        descr.setText(event.description);
+
+        findViewById(R.id.view_guest_list).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(HostPartyActivity.this, ViewGuestsActivity.class);
+                intent.putExtra("eventKey", eventKey);
+                startActivity(intent);
+            }
+        });
+
+        findViewById(R.id.approve_guests).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HostPartyActivity.this, HostTinderActivity.class);
+                intent.putExtra("eventKey", eventKey);
+                startActivity(intent);
             }
         });
     }

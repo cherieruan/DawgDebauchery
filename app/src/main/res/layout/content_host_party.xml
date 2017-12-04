@@ -8,10 +8,59 @@
     tools:context="edu.uw.cruan.dawgdebauchery.HostPartyActivity"
     tools:showIn="@layout/activity_host_party">
 
-    <ListView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-    </ListView>
+        <TextView
+            android:id="@+id/event_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:text="Event Name Here"/>
+
+        <TextView
+            android:id="@+id/event_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:textSize="18sp"
+            android:textAlignment="center"
+            android:text="Event Description Here"/>
+
+        <Button
+            android:id="@+id/main_view_map"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Edit Party Details">
+
+        </Button>
+
+        <Button
+            android:id="@+id/view_guest_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="View Guest List">
+
+        </Button>
+
+        <Button
+            android:id="@+id/approve_guests"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Approve New Guests">
+
+        </Button>
+
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
