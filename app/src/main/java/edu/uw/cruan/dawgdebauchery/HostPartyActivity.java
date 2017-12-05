@@ -78,6 +78,15 @@ public class HostPartyActivity extends AppCompatActivity {
         TextView descr = (TextView) findViewById(R.id.event_description);
         descr.setText(event.get("description"));
 
+        findViewById(R.id.edit_party_details).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HostPartyActivity.this, EditEventActivity.class);
+                intent.putExtra("eventKey", eventKey);
+                startActivity(intent);
+            }
+        });
+
         findViewById(R.id.view_guest_list).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
