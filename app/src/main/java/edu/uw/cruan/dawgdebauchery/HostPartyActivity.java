@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -13,9 +14,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class HostPartyActivity extends AppCompatActivity {
 
-    private Event event;
+    private static final String TAG = "HostPartyActivity";
+    private Map<String, String> event;
     private String userID;
     private String eventKey;
 
@@ -30,46 +35,48 @@ public class HostPartyActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-
         Bundle extras = getIntent().getExtras();
 
         if (extras != null) {
             userID = extras.getString("userID");
             // Get event key
-            mDatabase.child("users").child(userID).child("user_event").addValueEventListener(new ValueEventListener() {
+            mDatabase.child("Users").child(userID).child("eventKey").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     eventKey = (String) dataSnapshot.getValue();
+                    getEvent();
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {}
             });
-
-            // Get event object
-            mDatabase.child("events").child(eventKey).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    event = (Event) dataSnapshot.getValue();
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                }
-            });
-            setInterface();
         }
     }
 
+    private void getEvent() {
+        // Get event object
+        mDatabase.child("events").child(eventKey).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.v(TAG, ((HashMap) dataSnapshot.getValue()).toString());
+                event = (HashMap<String, String>)dataSnapshot.getValue();
+                setInterface();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
 
     private void setInterface() {
         // Event name
         TextView eventName = (TextView) findViewById(R.id.event_name);
-        eventName.setText(event.name);
+        eventName.setText(event.get("name"));
 
         // Event description
         TextView descr = (TextView) findViewById(R.id.event_description);
-        descr.setText(event.description);
+        descr.setText(event.get("description"));
 
         findViewById(R.id.view_guest_list).setOnClickListener(new View.OnClickListener() {
             @Override
