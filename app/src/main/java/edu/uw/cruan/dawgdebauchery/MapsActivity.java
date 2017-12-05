@@ -26,7 +26,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -42,6 +41,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 //TODO: Refactor code into service
@@ -90,8 +90,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Create the LocationRequest object
         mLocationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(10 * 1000)        // 10 seconds, in milliseconds
-                .setFastestInterval(5 * 1000); // 1 second, in milliseconds
+                .setInterval(3 * 1000)        // 10 seconds, in milliseconds
+                .setFastestInterval(2 * 1000); // 1 second, in milliseconds
 
         mGoogleApiClient.connect();
 
@@ -153,6 +153,100 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 //
 //        });
 
+        //For now we put all the below code into getInformationFromDataBase(), because we want to change
+        //visibility of events every time a change of location is produced. So in this way, it is easier
+        //to access the databse and display its information, instead of calling onMapReady()
+        getInformationFromDataBase();
+//        ValueEventListener valueListener = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                for(DataSnapshot eventSnapShot: dataSnapshot.getChildren()) {
+//                    Event event = (Event) eventSnapShot.getValue(Event.class);
+//                    LatLng location = getLocationFromAddress(event.address);
+//                    if(event.private_party == false) {
+//
+//                        //show events only under 1km radius
+//                        boolean visibility;
+//                        float[] distance = new float[5];
+//                        Location.distanceBetween(currentLocation.getLatitude(), currentLocation.getLongitude(),
+//                                location.latitude, location.longitude, distance);
+//                        if(distance[0] < 250) {
+//                            visibility = true;
+//                        } else {
+//                            visibility = false;
+//                        }
+//
+//                        StringBuilder description = new StringBuilder();
+//                        description.append("Date: " + event.date + "\n");
+//                        description.append("Time: " + event.time + "\n");
+//                        description.append("Address: " + event.address + "\n");
+//                        mMap.addMarker(new MarkerOptions()
+//                                .position(location)
+//                                .title(event.description)
+//                                .snippet(description.toString())
+//                                .visible(visibility));
+//                    } else {
+//                        //we draw the private events
+//                        Circle circle = mMap.addCircle(new CircleOptions()
+//                        .center(location)
+//                        .radius(350)
+//                        .strokeColor(Color.RED)
+//                        .strokeWidth(6)
+//                        .fillColor(R.color.aquaRed)
+//                        .visible(true));
+//                    }
+//
+//                    Log.w(TAG, "HOLA");
+//                }
+//
+//                mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+//
+//                    @Override
+//                    public View getInfoWindow(Marker arg0) {
+//                        return null;
+//                    }
+//
+//                    @Override
+//                    public View getInfoContents(Marker marker) {
+//
+//                        LinearLayout info = new LinearLayout(MapsActivity.this);
+//                        info.setOrientation(LinearLayout.VERTICAL);
+//
+//                        TextView title = new TextView(MapsActivity.this);
+//                        title.setTextColor(Color.BLACK);
+//                        title.setGravity(Gravity.CENTER);
+//                        title.setTypeface(null, Typeface.BOLD);
+//                        title.setText(marker.getTitle());
+//
+//                        TextView snippet = new TextView(MapsActivity.this);
+//                        snippet.setTextColor(Color.GRAY);
+//                        snippet.setText(marker.getSnippet());
+//
+//                        info.addView(title);
+//                        info.addView(snippet);
+//
+//                        return info;
+//                    }
+//                });
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                Log.w(TAG, "loadEvent:onCancelled", databaseError.toException());
+//            }
+//
+//
+//
+//        };
+//
+//        //add the listener to the events group of the database
+//        mDatabase.child("events").addValueEventListener(valueListener);
+
+        // TODO When we are building out the marker clicking system we have to build our own view and inflate it in place of the other view
+    }
+
+    public void getInformationFromDataBase() {
         ValueEventListener valueListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -160,11 +254,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 for(DataSnapshot eventSnapShot: dataSnapshot.getChildren()) {
                     Event event = (Event) eventSnapShot.getValue(Event.class);
                     LatLng location = getLocationFromAddress(event.address);
+                    if(location == null) {
+                        continue;
+                    }
                     if(event.private_party == false) {
 
                         //show events only under 1km radius
                         boolean visibility;
                         float[] distance = new float[5];
+
                         Location.distanceBetween(currentLocation.getLatitude(), currentLocation.getLongitude(),
                                 location.latitude, location.longitude, distance);
                         if(distance[0] < 250) {
@@ -185,15 +283,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     } else {
                         //we draw the private events
                         Circle circle = mMap.addCircle(new CircleOptions()
-                        .center(location)
-                        .radius(350)
-                        .strokeColor(Color.RED)
-                        .strokeWidth(6)
-                        .fillColor(R.color.aquaRed)
-                        .visible(true));
+                                .center(location)
+                                .radius(350)
+                                .strokeColor(Color.RED)
+                                .strokeWidth(6)
+                                .fillColor(R.color.aquaRed)
+                                .visible(true));
                     }
-
-                    Log.w(TAG, "HOLA");
                 }
 
                 mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
@@ -238,19 +334,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //add the listener to the events group of the database
         mDatabase.child("events").addValueEventListener(valueListener);
-
-        // TODO When we are building out the marker clicking system we have to build our own view and inflate it in place of the other view
     }
+
 
     //Converts and address to a LatLng object
     private LatLng getLocationFromAddress(String address) {
         Geocoder coder = new Geocoder(this);
-        List<Address> coordinates;
+        List<Address> coordinates = new ArrayList<>();
         LatLng p = null;
 
         try {
             coordinates = coder.getFromLocationName(address, 5);
 
+            if(coordinates.size() == 0) {
+                return p;
+            }
             Address location = coordinates.get(0);
             p = new LatLng(location.getLatitude(), location.getLongitude());
 
@@ -296,7 +394,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //get the current location based on gps service
         this.currentLocation = location;
         LatLng newLocation = new LatLng(location.getLatitude(), location.getLongitude());
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(newLocation));
+
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(newLocation));
 
         if(radiusOfCurrentLocation != null) {
             radiusOfCurrentLocation.remove();
@@ -308,6 +407,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .strokeWidth(2)
                 .fillColor(R.color.aliceblue)
                 .visible(true));
+
+        getInformationFromDataBase();
 
 
 
