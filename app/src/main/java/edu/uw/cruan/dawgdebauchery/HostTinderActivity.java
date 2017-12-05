@@ -1,5 +1,6 @@
 package edu.uw.cruan.dawgdebauchery;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -21,6 +22,7 @@ public class HostTinderActivity extends AppCompatActivity {
 
     public static final String TAG = "Tinder Activity";
     public Event event;
+    public String eventKey;
     public Queue<String> pending;
     public List<String> confirmed;
     public String currUserID;
@@ -37,7 +39,7 @@ public class HostTinderActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            String eventKey = extras.getString("eventKey");
+            eventKey = extras.getString("eventKey");
             mDatabase.child("events").child(eventKey).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -62,6 +64,7 @@ public class HostTinderActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     confirmed.add(currUserID);
+                    mDatabase.child("events").child(eventKey).push().setValue(currUserID); //add to the list
                     displayUser();
                 }
             });
@@ -74,7 +77,7 @@ public class HostTinderActivity extends AppCompatActivity {
             displayEmptyPage();
         } else {
             currUserID = pending.remove();
-            mDatabase.child("users").child(currUserID).addValueEventListener(new ValueEventListener() {
+            mDatabase.child("Users").child(currUserID).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     user = (UserAccount) dataSnapshot.getValue();
@@ -87,7 +90,7 @@ public class HostTinderActivity extends AppCompatActivity {
                 public void onCancelled(DatabaseError databaseError) {}
             });
             ImageView imgView = (ImageView) findViewById(R.id.user_img);
-            imgView.setImageResource(user.imgURL);
+            imgView.setImageURI(Uri.parse(user.imgURL));
 
             TextView txtView = (TextView) findViewById(R.id.invite_text);
             txtView.setText("Invite " + user.fName + "?");

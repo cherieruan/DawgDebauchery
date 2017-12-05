@@ -14,6 +14,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ViewGuestsActivity extends AppCompatActivity {
 
@@ -21,9 +22,9 @@ public class ViewGuestsActivity extends AppCompatActivity {
     public static final String TAG = "ViewGuests";
     //firebase!
     private DatabaseReference mDatabase;
-    private Event event;
     private List<String> attendees;
-
+    private List<UserAccount> attendeeAccounts = new ArrayList<UserAccount>();
+    private int i;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,39 +36,44 @@ public class ViewGuestsActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         String eventKey = extras.getString("eventKey");
         // Get event object
-        mDatabase.child("events").child(eventKey).addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.child("events").child(eventKey).child("attendees").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                event = (Event) dataSnapshot.getValue();
+                attendees = (List<String>) dataSnapshot.getValue();
+                toView();
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         });
+    }
 
-        attendees = event.confirmedGuests;
-
-        final List<UserAccount> attendeeAccounts = new ArrayList<UserAccount>();
-        mDatabase.child("users").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                    attendeeAccounts.add((UserAccount) postSnapshot.getValue());
+    private void toView() {
+        for (i = 0; i < attendees.size(); i++) {
+            String UID = attendees.get(i);
+            mDatabase.child("Users").child(UID).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Map<String, String> userMap = (Map<String, String>) dataSnapshot.getValue();
+                    attendeeAccounts.add(new UserAccount(userMap.get("firstName"), userMap.get("lastName"),
+                            userMap.get("imgUrl")));
+                    //Log.v(TAG, UID);
+                    if (i == attendees.size()) {
+                        setAdapter();
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Getting Post failed, log a message
-                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                // ...
-            }
-        });
+                @Override
+                public void onCancelled(DatabaseError databaseError) {}
+            });
+        }
+    }
 
-        ListAdapter adapter = new ListAdapter(this, attendeeAccounts);
+    private void setAdapter() {
+        Log.v(TAG, attendeeAccounts.toString());
+        ListAdapter adapter = new ListAdapter(getApplicationContext(), attendeeAccounts);
         AdapterView listView = (AdapterView) findViewById(R.id.list_view);
         listView.setAdapter(adapter);
-
     }
 
 }

@@ -1,6 +1,7 @@
 package edu.uw.cruan.dawgdebauchery;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,7 @@ import java.util.List;
 public class ListAdapter extends ArrayAdapter<UserAccount> {
 
     public static final String TAG = "ListAdapter";
-    List<UserAccount> data;
+    private List<UserAccount> data;
 
 
     public ListAdapter(Context context, List<UserAccount> data) {
@@ -40,7 +41,7 @@ public class ListAdapter extends ArrayAdapter<UserAccount> {
         TextView name = (TextView) v.findViewById(R.id.guest_name);
 
         if (pic != null) {
-            pic.setImageResource(data.get(position).imgURL);
+            pic.setImageURI(Uri.parse(data.get(position).imgURL));
         }
 
         if (name != null) {

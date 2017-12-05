@@ -39,7 +39,7 @@ public class CreateEventActivity extends AppCompatActivity {
         // Get field references
 
         final EditText create_event_address = (EditText) findViewById(R.id.create_event_address);
-
+        final EditText create_event_name = (EditText) findViewById(R.id.create_event_name);
         final EditText create_event_description = (EditText) findViewById(R.id.create_event_description);
 
         Button create_event_next = (Button) findViewById(R.id.create_event_next);
@@ -49,6 +49,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
                 String address = create_event_address.getText().toString();
                 String description = create_event_description.getText().toString();
+                String name = create_event_name.getText().toString();
 
                 TextView date = (TextView) findViewById(R.id.create_event_set_date_text_view);
                 TextView time = (TextView) findViewById(R.id.create_event_set_time_text_view);
@@ -62,7 +63,7 @@ public class CreateEventActivity extends AppCompatActivity {
                     privacy = false;
                 }
 
-                Event newEvent = new Event(address, date.getText().toString(), time.getText().toString(), description, privacy);
+                Event newEvent = new Event(name, address, date.getText().toString(), time.getText().toString(), description, privacy);
                 //get the push key value
                 String eventKey = mDatabase.child("events").push().getKey();
                 //then you can write in that node in this way

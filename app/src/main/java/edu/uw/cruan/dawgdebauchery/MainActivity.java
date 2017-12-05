@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
     private String userUID;
     private DatabaseReference mDatabase;
     private String fullName = "";
-    private boolean hasName = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
         Button main_view_map = (Button) this.findViewById(R.id.main_view_map);
         Button main_view_events_list = (Button) this.findViewById(R.id.main_view_events_list);
         Button main_edit_profile = (Button) this.findViewById(R.id.main_edit_profile);
-        Button main_create_event = (Button) this.findViewById(R.id.main_create_event);
 
         // Set current user
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -48,29 +46,38 @@ public class MainActivity extends AppCompatActivity {
         mDatabase.child("Users").child(userUID).child("firstName").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (hasName) {
-                    fullName = "Welcome, " + ((String) dataSnapshot.getValue()) + " " + fullName + "!";
-                    TextView profileName = (TextView) findViewById(R.id.profile_name);
-                    profileName.setText(fullName);
-                } else {
-                    fullName += ((String) dataSnapshot.getValue()) + " ";
-                    hasName = !hasName;
-                }
+                fullName = "Welcome, " + ((String) dataSnapshot.getValue()) + fullName + "!";
+                TextView profileName = (TextView) findViewById(R.id.profile_name);
+                profileName.setText(fullName);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         });
 
-        mDatabase.child("Users").child(userUID).child("lastName").addValueEventListener(new ValueEventListener() {
+        // Check if user is hosting event
+        mDatabase.child("Users").child(userUID).child("eventKey").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                fullName = fullName + (String) dataSnapshot.getValue();
-                if (hasName) {
-                    TextView profileName = (TextView) findViewById(R.id.profile_name);
-                    profileName.setText(fullName);
+                Button main_create_event = (Button) findViewById(R.id.main_create_event);
+                if (dataSnapshot.getValue() != null) {
+                    main_create_event.setText("MANAGE YOUR EVENT");
+                    main_create_event.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(MainActivity.this, HostPartyActivity.class);
+                            intent.putExtra("userID", userUID);
+                            startActivity(intent);
+                        }
+                    });
                 } else {
-                    hasName = !hasName;
+                    main_create_event.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(MainActivity.this, CreateEventActivity.class);
+                            startActivity(intent);
+                        }
+                    });
                 }
             }
 
@@ -98,29 +105,10 @@ public class MainActivity extends AppCompatActivity {
         main_edit_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, RegistrationActivity.class);
+                Intent intent = new Intent(MainActivity.this, EditProfile.class);
                 startActivity(intent);
             }
         });
-
-        if (hasEvent) {
-            main_create_event.setText("MANAGE YOUR EVENT");
-            main_create_event.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(MainActivity.this, HostPartyActivity.class);
-                    startActivity(intent);
-                }
-            });
-        } else {
-            main_create_event.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(MainActivity.this, CreateEventActivity.class);
-                    startActivity(intent);
-                }
-            });
-        }
     }
 
 
