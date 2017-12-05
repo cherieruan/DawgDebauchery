@@ -156,13 +156,6 @@ public class LoginActivity extends AppCompatActivity  {
                                             openRegistration();
                                         }
                                     });
-                                    /*
-                                    snackbar.setAction("Close", new OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            snackbar.dismiss();
-                                        }
-                                    }); */
                                     snackbar.show();
 
                                 }else {
@@ -183,13 +176,11 @@ public class LoginActivity extends AppCompatActivity  {
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
         return email.endsWith("@uw.edu");
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 8;
+        return password.length() >= 8;
     }
 
 }

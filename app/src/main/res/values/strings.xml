@@ -30,6 +30,9 @@
     <string name="title_activity_view_guests">ViewGuestsActivity</string>
 
     <string name="privacy_prompt">Pick your party\'s privacy.</string>
+    <string name="profile_close_btn_txt">Close</string>
+    <string name="bio_default">My mom says I\'m cool! Like me please!</string>
+    <string name="bio_label">Edit bio:</string>
 
     <string-array name="public_private">
         <item>Public</item>
