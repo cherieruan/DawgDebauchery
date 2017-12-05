@@ -31,6 +31,9 @@ public class Event {
         pendingGuests = new LinkedList<String>();
     }
 
+    public Event() {
+    }
+
     public String toString() {
         return name + " " + description + " on " + date + " at " + time;
     }
