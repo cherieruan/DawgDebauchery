@@ -16,12 +16,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 
 public class HostTinderActivity extends AppCompatActivity {
 
     public static final String TAG = "Tinder Activity";
-    public Event event;
+    public Map<String, String> eventMap;
     public String eventKey;
     public Queue<String> pending;
     public List<String> confirmed;
@@ -40,16 +41,19 @@ public class HostTinderActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             eventKey = extras.getString("eventKey");
-            mDatabase.child("events").child(eventKey).addListenerForSingleValueEvent(new ValueEventListener() {
+            mDatabase.child("events").child(eventKey).child("pending").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    event = (Event) dataSnapshot.getValue();
+                    pending = (Queue<String>) dataSnapshot.getValue();
+                    if (pending == null) {
+                        displayEmptyPage();
+                    } else {
+                        displayUser();
+                    }
                 }
                 @Override
                 public void onCancelled(DatabaseError databaseError) {}
             });
-            pending = event.pendingGuests;
-            confirmed = event.confirmedGuests;
 
             Button noButton = (Button) findViewById(R.id.no_button);
             noButton.setOnClickListener(new View.OnClickListener() {
@@ -68,7 +72,6 @@ public class HostTinderActivity extends AppCompatActivity {
                     displayUser();
                 }
             });
-            displayUser();
         }
     }
 
@@ -99,13 +102,15 @@ public class HostTinderActivity extends AppCompatActivity {
 
     private void displayEmptyPage() {
         TextView txtView = (TextView) findViewById(R.id.invite_text);
-        txtView.setText("No pending guests.");
+        txtView.setVisibility(View.GONE);
         ImageView imgView = (ImageView) findViewById(R.id.user_img);
         imgView.setImageResource(0);
         Button noButton = (Button) findViewById(R.id.no_button);
         noButton.setVisibility(View.GONE);
         Button yesButton = (Button) findViewById(R.id.yes_button);
         yesButton.setVisibility(View.GONE);
+        TextView noGuests = (TextView) findViewById(R.id.no_pending);
+        noGuests.setVisibility(View.VISIBLE);
     }
 
 }
