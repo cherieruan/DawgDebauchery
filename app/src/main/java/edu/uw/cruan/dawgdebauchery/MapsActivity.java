@@ -2,17 +2,24 @@ package edu.uw.cruan.dawgdebauchery;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -23,9 +30,19 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.io.IOException;
+import java.util.List;
 
 //TODO: Refactor code into service
 //TODO: prompt user for file name at beginning and put into filename field or sharedpreference
@@ -46,6 +63,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     private LocationRequest mLocationRequest;
     private String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
+    //Firebase database reference
+    private DatabaseReference mDatabase;
+
+    private Location currentLocation;
+
+    private Circle radiusOfCurrentLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +94,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .setFastestInterval(5 * 1000); // 1 second, in milliseconds
 
         mGoogleApiClient.connect();
+
+        //get a reference to the database
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
     }
 
@@ -113,23 +140,124 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(47.655548, -122.303200))
-                .title("Test Party At UW!"));
 
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
-        {
+//        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
+//        {
+//
+//            @Override
+//            public boolean onMarkerClick(Marker arg0) {
+//                Intent intent = new Intent(MapsActivity.this, PartyDescriptionActivity.class);
+//                startActivity(intent);
+//                return true;
+//            }
+//
+//        });
 
+        ValueEventListener valueListener = new ValueEventListener() {
             @Override
-            public boolean onMarkerClick(Marker arg0) {
-                Intent intent = new Intent(MapsActivity.this, PartyDescriptionActivity.class);
-                startActivity(intent);
-                return true;
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot eventSnapShot: dataSnapshot.getChildren()) {
+                    Event event = (Event) eventSnapShot.getValue(Event.class);
+                    LatLng location = getLocationFromAddress(event.address);
+                    if(event.private_party == false) {
+
+                        //show events only under 1km radius
+                        boolean visibility;
+                        float[] distance = new float[5];
+                        Location.distanceBetween(currentLocation.getLatitude(), currentLocation.getLongitude(),
+                                location.latitude, location.longitude, distance);
+                        if(distance[0] < 250) {
+                            visibility = true;
+                        } else {
+                            visibility = false;
+                        }
+
+                        StringBuilder description = new StringBuilder();
+                        description.append("Date: " + event.date + "\n");
+                        description.append("Time: " + event.time + "\n");
+                        description.append("Address: " + event.address + "\n");
+                        mMap.addMarker(new MarkerOptions()
+                                .position(location)
+                                .title(event.description)
+                                .snippet(description.toString())
+                                .visible(visibility));
+                    } else {
+                        //we draw the private events
+                        Circle circle = mMap.addCircle(new CircleOptions()
+                        .center(location)
+                        .radius(350)
+                        .strokeColor(Color.RED)
+                        .strokeWidth(6)
+                        .fillColor(R.color.aquaRed)
+                        .visible(true));
+                    }
+
+                    Log.w(TAG, "HOLA");
+                }
+
+                mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+                    @Override
+                    public View getInfoWindow(Marker arg0) {
+                        return null;
+                    }
+
+                    @Override
+                    public View getInfoContents(Marker marker) {
+
+                        LinearLayout info = new LinearLayout(MapsActivity.this);
+                        info.setOrientation(LinearLayout.VERTICAL);
+
+                        TextView title = new TextView(MapsActivity.this);
+                        title.setTextColor(Color.BLACK);
+                        title.setGravity(Gravity.CENTER);
+                        title.setTypeface(null, Typeface.BOLD);
+                        title.setText(marker.getTitle());
+
+                        TextView snippet = new TextView(MapsActivity.this);
+                        snippet.setTextColor(Color.GRAY);
+                        snippet.setText(marker.getSnippet());
+
+                        info.addView(title);
+                        info.addView(snippet);
+
+                        return info;
+                    }
+                });
             }
 
-        });
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "loadEvent:onCancelled", databaseError.toException());
+            }
+
+
+
+        };
+
+        //add the listener to the events group of the database
+        mDatabase.child("events").addValueEventListener(valueListener);
 
         // TODO When we are building out the marker clicking system we have to build our own view and inflate it in place of the other view
+    }
+
+    //Converts and address to a LatLng object
+    private LatLng getLocationFromAddress(String address) {
+        Geocoder coder = new Geocoder(this);
+        List<Address> coordinates;
+        LatLng p = null;
+
+        try {
+            coordinates = coder.getFromLocationName(address, 5);
+
+            Address location = coordinates.get(0);
+            p = new LatLng(location.getLatitude(), location.getLongitude());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return p;
     }
 
     @Override
@@ -165,10 +293,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //Place current location marker
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
+        //get the current location based on gps service
+        this.currentLocation = location;
+        LatLng newLocation = new LatLng(location.getLatitude(), location.getLongitude());
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(newLocation));
+
+        if(radiusOfCurrentLocation != null) {
+            radiusOfCurrentLocation.remove();
+        }
+        radiusOfCurrentLocation = mMap.addCircle(new CircleOptions()
+                .center(newLocation)
+                .radius(250)
+                .strokeColor(Color.TRANSPARENT)
+                .strokeWidth(2)
+                .fillColor(R.color.aliceblue)
+                .visible(true));
 
 
-        //move map camera
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,11));
+
     }
 
     @Override

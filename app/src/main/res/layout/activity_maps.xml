@@ -7,4 +7,7 @@
     android:layout_height="match_parent"
     map:uiZoomControls="true"
     map:cameraZoom="16"
+    map:mapType="satellite"
+    map:cameraTilt="14"
+    map:uiZoomGestures="true"
     tools:context="edu.uw.cruan.dawgdebauchery.MapsActivity"/>
