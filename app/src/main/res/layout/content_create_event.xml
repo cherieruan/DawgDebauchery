@@ -97,6 +97,14 @@
             android:width="@dimen/edit_text_field_width_default"/>
 
         <EditText
+            android:id="@+id/create_event_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/activity_default_padding"
+            android:hint="Name"
+            android:width="@dimen/edit_text_field_width_default"/>
+
+        <EditText
             android:id="@+id/create_event_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.AdapterView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -40,7 +41,11 @@ public class ViewGuestsActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 attendees = (List<String>) dataSnapshot.getValue();
-                toView();
+                if (attendees == null) {
+                    findViewById(R.id.no_guests).setVisibility(View.VISIBLE);
+                } else {
+                    toView();
+                }
             }
 
             @Override
