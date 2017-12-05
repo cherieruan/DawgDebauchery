@@ -4,11 +4,11 @@ import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.firebase.database.DatabaseReference;
@@ -45,7 +45,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 TextView date = (TextView) findViewById(R.id.create_event_set_date_text_view);
                 TextView time = (TextView) findViewById(R.id.create_event_set_time_text_view);
 
-                AppCompatSpinner spinner = (AppCompatSpinner) findViewById(R.id.create_event_privacy);
+                Spinner spinner = (Spinner) findViewById(R.id.create_event_privacy);
 
                 boolean privacy;
                 if (spinner.getSelectedItem().toString() == "Private") {
@@ -54,7 +54,7 @@ public class CreateEventActivity extends AppCompatActivity {
                     privacy = false;
                 }
 
-                Event newEvent = new Event(address, date.getText().toString(), time.getText().toString(), description, privacy);
+                Event newEvent = new Event("temp Name", address, date.getText().toString(), time.getText().toString(), description, privacy);
                 mDatabase.child("events").push().setValue(newEvent); //add to the list
 
                 Intent intent = new Intent(CreateEventActivity.this, MainActivity.class);
@@ -62,15 +62,6 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
 
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
     }
 
     public void onSetTimeButtonClicked(View v){
