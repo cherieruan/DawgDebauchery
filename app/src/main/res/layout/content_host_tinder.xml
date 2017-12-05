@@ -12,7 +12,7 @@
         android:id="@+id/no_pending"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="No Current Guests"
+        android:text="No Pending Guests"
         android:gravity="center"
         android:textStyle="bold"
         android:textSize="25sp"
