@@ -26,6 +26,7 @@ public class ViewGuestsActivity extends AppCompatActivity {
     private List<String> attendees;
     private List<UserAccount> attendeeAccounts = new ArrayList<UserAccount>();
     private int i;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

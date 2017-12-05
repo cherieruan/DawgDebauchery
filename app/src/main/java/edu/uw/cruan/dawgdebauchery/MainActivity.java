@@ -93,11 +93,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // TODO Create activity for event list and properly bind this button
         main_view_events_list.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, CreateEventActivity.class);
+                Intent intent = new Intent(MainActivity.this, ViewEventListActivity.class);
                 startActivity(intent);
             }
         });
