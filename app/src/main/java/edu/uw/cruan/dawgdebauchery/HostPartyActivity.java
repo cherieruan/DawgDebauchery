@@ -87,6 +87,15 @@ public class HostPartyActivity extends AppCompatActivity {
             }
         });
 
+        // Event address
+        TextView addr = (TextView) findViewById(R.id.event_address);
+        addr.setText(event.get("address"));
+
+        // Event time
+        TextView time = (TextView) findViewById(R.id.event_time);
+        time.setText(event.get("time"));
+
+        // Buttons
         findViewById(R.id.view_guest_list).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

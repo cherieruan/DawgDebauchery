@@ -38,5 +38,9 @@
         <item>Public</item>
         <item>Private</item>
     </string-array>
+<<<<<<< HEAD
     <string name="title_activity_edit_event">EditEventActivity</string>
+=======
+    <string name="title_activity_view_event_list">ViewEventListActivity</string>
+>>>>>>> f15c707b45f21b01849ba16e92c94ea2eaa5de5d
 </resources>

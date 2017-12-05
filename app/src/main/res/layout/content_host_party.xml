@@ -22,7 +22,7 @@
             android:textSize="24sp"
             android:textStyle="bold"
             android:textAlignment="center"
-            android:text="Event Name Here"/>
+            />
 
         <TextView
             android:id="@+id/event_description"
@@ -32,7 +32,27 @@
             android:padding="@dimen/activity_horizontal_margin"
             android:textSize="18sp"
             android:textAlignment="center"
-            android:text="Event Description Here"/>
+            />
+
+        <TextView
+            android:id="@+id/event_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:textSize="15sp"
+            android:textAlignment="center"
+            />
+
+        <TextView
+            android:id="@+id/event_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:textSize="15sp"
+            android:textAlignment="center"
+            />
 
         <Button
             android:id="@+id/edit_party_details"
