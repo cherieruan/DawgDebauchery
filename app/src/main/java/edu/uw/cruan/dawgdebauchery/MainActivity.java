@@ -21,7 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    private boolean hasEvent = true;
+    private boolean hasEvent = false;
     private String userUID;
     private DatabaseReference mDatabase;
     private String fullName = "";

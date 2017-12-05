@@ -21,8 +21,7 @@
             android:layout_gravity="center"
             android:padding="@dimen/activity_horizontal_margin"
             android:textSize="20sp"
-            android:textStyle="bold"
-            android:text="Profile Name Here"/>
+            android:textStyle="bold" />
 
         <android.support.v7.widget.AppCompatImageView
             android:layout_width="wrap_content"
@@ -47,7 +46,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:layout_margin="@dimen/activity_default_button_margin"
-                    android:text="View Map">
+                    android:text="View Map"
+                    android:drawableTop="@drawable/ic_map_black_24dp">
 
                 </Button>
 
@@ -57,7 +57,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:layout_margin="@dimen/activity_default_button_margin"
-                    android:text="View Events">
+                    android:text="View Events"
+                    android:drawableTop="@drawable/ic_event_black_24dp">
 
                 </Button>
 
@@ -73,7 +74,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:layout_margin="@dimen/activity_default_button_margin"
-                    android:text="Create Event">
+                    android:text="Create Event"
+                    android:drawableTop="@drawable/ic_note_add_black_24dp">
 
                 </Button>
 
@@ -83,7 +85,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:layout_margin="@dimen/activity_default_button_margin"
-                    android:text="Edit Profile">
+                    android:text="Edit Profile"
+                    android:drawableTop="@drawable/ic_create_black_24dp">
 
                 </Button>
 

@@ -4,17 +4,25 @@ import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class CreateEventActivity extends AppCompatActivity {
+
+    private final String TAG = "CreateEventActivity";
 
     private DatabaseReference mDatabase;
 
@@ -45,7 +53,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 TextView date = (TextView) findViewById(R.id.create_event_set_date_text_view);
                 TextView time = (TextView) findViewById(R.id.create_event_set_time_text_view);
 
-                AppCompatSpinner spinner = (AppCompatSpinner) findViewById(R.id.create_event_privacy);
+                Spinner spinner = (Spinner) findViewById(R.id.create_event_privacy);
 
                 boolean privacy;
                 if (spinner.getSelectedItem().toString() == "Private") {
@@ -55,22 +63,40 @@ public class CreateEventActivity extends AppCompatActivity {
                 }
 
                 Event newEvent = new Event(address, date.getText().toString(), time.getText().toString(), description, privacy);
-                mDatabase.child("events").push().setValue(newEvent); //add to the list
+                //get the push key value
+                String eventKey = mDatabase.child("events").push().getKey();
+                //then you can write in that node in this way
+                mDatabase.child("events").child(eventKey).setValue(newEvent);
+
+                FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                String UID = currentFirebaseUser.getUid();
+                if (UID == null) {
+                    throw new NullPointerException("There is no user currently logged in, log in a user.");
+                }
+
+                mDatabase.child("Users").child(UID).child("event_key").push().setValue(eventKey);
+
+//                DatabaseReference databaseRef;
+//                databaseRef = FirebaseDatabase.getInstance().getReference()
+//                        .child("users").child(UID).child("event_key").push().setValue();
+//                databaseRef.addValueEventListener(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                        String value = (String)dataSnapshot.getValue();
+//                        Log.v(TAG, value);
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(DatabaseError databaseError) {
+//                        Log.w(TAG, "listener canceled", databaseError.toException());
+//                    }
+//                });
 
                 Intent intent = new Intent(CreateEventActivity.this, MainActivity.class);
                 startActivity(intent);
             }
         });
 
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
     }
 
     public void onSetTimeButtonClicked(View v){
