@@ -2,7 +2,7 @@
     <string name="app_name">DawgDebauchery</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_maps">Map</string>
-    <string name="google_maps_key">AIzaSyDeXKUrpNirlY5dbqm3cyG3iR7e0Qh4hek</string>
+    <string name="google_maps_key">AIzaSyAfSxrWhyB2RUqgw7UANHTF8RWihpnss9g</string>
     <string name="title_activity_login">Sign in</string>
 
     <!-- Strings related to login -->
