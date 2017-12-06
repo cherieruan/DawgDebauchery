@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -14,13 +13,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class HostPartyActivity extends AppCompatActivity {
 
     private static final String TAG = "HostPartyActivity";
-    private Map<String, String> event;
+    private Event event;
     private String userID;
     private String eventKey;
 
@@ -44,8 +40,12 @@ public class HostPartyActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     eventKey = (String) dataSnapshot.getValue();
-                    Log.v(TAG, (String) dataSnapshot.getValue());
-                    getEvent();
+                    if (eventKey == null) {
+                        Intent intent = new Intent(HostPartyActivity.this, MainActivity.class);
+                        startActivity(intent);
+                    } else {
+                        getEvent();
+                    }
                 }
 
                 @Override
@@ -59,8 +59,7 @@ public class HostPartyActivity extends AppCompatActivity {
         mDatabase.child("events").child(eventKey).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.v(TAG, ((HashMap) dataSnapshot.getValue()).toString());
-                event = (HashMap<String, String>)dataSnapshot.getValue();
+                event = (Event) dataSnapshot.getValue(Event.class);
                 setInterface();
             }
 
@@ -73,11 +72,11 @@ public class HostPartyActivity extends AppCompatActivity {
     private void setInterface() {
         // Event name
         TextView eventName = (TextView) findViewById(R.id.event_name);
-        eventName.setText(event.get("name"));
+        eventName.setText(event.name);
 
         // Event description
         TextView descr = (TextView) findViewById(R.id.event_description);
-        descr.setText(event.get("description"));
+        descr.setText(event.description);
 
         findViewById(R.id.edit_party_details).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,11 +89,11 @@ public class HostPartyActivity extends AppCompatActivity {
 
         // Event address
         TextView addr = (TextView) findViewById(R.id.event_address);
-        addr.setText(event.get("address"));
+        addr.setText(event.address);
 
         // Event time
         TextView time = (TextView) findViewById(R.id.event_time);
-        time.setText(event.get("time"));
+        time.setText(event.time);
 
         // Buttons
         findViewById(R.id.view_guest_list).setOnClickListener(new View.OnClickListener() {

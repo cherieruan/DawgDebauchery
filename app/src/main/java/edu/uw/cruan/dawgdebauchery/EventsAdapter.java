@@ -118,10 +118,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
         holder.time.setText(event.time);
         holder.description.setText(event.description);
         if (!event.private_party) {  // public party
-            holder.priv.setText("public");
+            holder.priv.setText("Public");
             holder.icon.setImageResource(R.drawable.ic_add_black_24dp);
         } else {
-            holder.priv.setText("private");
+            holder.priv.setText("Private");
             holder.icon.setImageResource(R.drawable.ic_email_black_24dp);
         }
     }
