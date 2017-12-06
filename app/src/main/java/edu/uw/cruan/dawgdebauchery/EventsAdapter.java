@@ -62,8 +62,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         if (dataSnapshot.getValue() == null || !(((Map<String, String>) dataSnapshot.getValue()).values().contains(eventKey))) {
                                             if (!event.private_party) {  // Add user to event's attending list
-                                             /*   mDatabase.child("events").child(eventKey).child("attendees").push().setValue(uID);
-                                                Toast.makeText(mCtx, "Added to guest list.",
+                                             mDatabase.child("events").child(eventKey).child("attendees").push().setValue(uID);
+                                                /*Toast.makeText(mCtx, "Added to guest list.",
                                                         Toast.LENGTH_SHORT).show();
                                                */ // Add event to user's interested events list
                                                 mDatabase.child("Users").child(uID).child("saved_events").push().setValue(eventKey);
