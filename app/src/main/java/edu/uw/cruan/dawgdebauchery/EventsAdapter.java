@@ -134,7 +134,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot eventSnapshot : dataSnapshot.getChildren()) {
                     if(event.id.equals(eventSnapshot.getValue())) {
-                        holder.priv.setText("attending");
+                        holder.priv.setText("Attending");
                         holder.icon.setVisibility(View.INVISIBLE);
                     }
 
