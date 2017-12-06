@@ -115,6 +115,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
         holder.name.setText(event.name);
         holder.date.setText(event.date);
         holder.time.setText(event.time);
+        holder.description.setText(event.description);
     }
 
 
@@ -124,13 +125,14 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView name, date, time;
+        public TextView name, date, time, description;
 
         public MyViewHolder(View view) {
             super(view);
             name = (TextView) view.findViewById(R.id.event_list_name);
             date = (TextView) view.findViewById(R.id.event_list_date);
             time = (TextView) view.findViewById(R.id.event_list_time);
+            description = (TextView) view.findViewById(R.id.event_list_description);
         }
 
     }
