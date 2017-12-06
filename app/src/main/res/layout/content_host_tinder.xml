@@ -35,13 +35,12 @@
             android:text="Invite Guest?"
             />
 
-        <ImageView
+        <com.android.volley.toolbox.NetworkImageView
             android:id="@+id/user_img"
             android:layout_width="328dp"
             android:layout_height="295dp"
             android:layout_gravity="center"
-            android:padding="30dp"
-            android:src="@drawable/ic_launcher_background" />
+            android:padding="30dp" />
 
         <RelativeLayout
             android:layout_width="match_parent"
