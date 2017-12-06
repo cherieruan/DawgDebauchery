@@ -44,6 +44,7 @@ public class HostPartyActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     eventKey = (String) dataSnapshot.getValue();
+                    Log.v(TAG, (String) dataSnapshot.getValue());
                     getEvent();
                 }
 
