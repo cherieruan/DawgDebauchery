@@ -71,7 +71,7 @@ public class CreateEventActivity extends AppCompatActivity {
                     throw new NullPointerException("There is no user currently logged in, log in a user.");
                 }
 
-                mDatabase.child("Users").child(UID).child("event_key").push().setValue(eventKey);
+                mDatabase.child("Users").child(UID).child("eventKey").setValue(eventKey);
 
 //                DatabaseReference databaseRef;
 //                databaseRef = FirebaseDatabase.getInstance().getReference()

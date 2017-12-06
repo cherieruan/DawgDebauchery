@@ -3,10 +3,10 @@ package edu.uw.cruan.dawgdebauchery;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -37,22 +37,32 @@ public class ViewEventListActivity extends AppCompatActivity {
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
-        mAdapter = new EventsAdapter(eventsList);
+        mAdapter = new EventsAdapter(this, eventsList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
         prepareData();
+
+        DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(
+                recyclerView.getContext(),
+                DividerItemDecoration.VERTICAL
+        );
+        recyclerView.addItemDecoration(mDividerItemDecoration);
     }
 
-    private void prepareData() {
+    protected void prepareData() {
         mDatabase.child("events").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 eventsMap = (Map<String, Map<String, Object>>) dataSnapshot.getValue();
+<<<<<<< HEAD
                 Log.v(TAG, eventsMap.toString());
+                toEventList(eventsMap, eventsList, mAdapter);
+=======
                 toEventList();
+>>>>>>> 73a9e21d32ee0f96d23bac19facf97971e3416f4
             }
 
             @Override
@@ -60,7 +70,9 @@ public class ViewEventListActivity extends AppCompatActivity {
         });
     }
 
-    private void toEventList() {
+    protected static void toEventList(Map<String, Map<String, Object>> eventsMap,
+                               List<Event> eventsList,
+                               EventsAdapter adapter) {
         for (String eventKey : eventsMap.keySet()) {
             Map<String, Object> event = eventsMap.get(eventKey);
             Event e = new Event((String) event.get("name"), (String) event.get("address"), (String) event.get("date"),
@@ -68,7 +80,7 @@ public class ViewEventListActivity extends AppCompatActivity {
                                 (Boolean) event.get("private_party"));
             eventsList.add(e);
         }
-        mAdapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
     }
 
 

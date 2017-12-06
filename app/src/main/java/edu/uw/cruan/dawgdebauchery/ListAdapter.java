@@ -48,7 +48,6 @@ public class ListAdapter extends ArrayAdapter<UserAccount> {
             name.setText(data.get(position).fName + " " + data.get(position).lName);
         }
 
-
         return v;
     }
 
