@@ -149,16 +149,25 @@ public class EditProfile extends AppCompatActivity {
 
         user.child("saved_events")
                 .addValueEventListener(new ValueEventListener() {
+
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         DatabaseReference events = mDatabaseReference.child("events");
                         final Map<String, Map<String, Object>> eventsMap = new HashMap();
+                        int i = 0;
                         for(DataSnapshot event : dataSnapshot.getChildren()) {
                             final String eventID = (String) event.getValue();
-                            events.child(eventID).addValueEventListener(new ValueEventListener() {
+                            final int currI = i;
+                            events.child(eventID).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                    eventsMap.put(eventID, (Map<String, Object>) dataSnapshot);
+                                    Log.v(TAG, "CurrI: " + currI + ", childrenCount: " + dataSnapshot.getChildrenCount());
+                                    eventsMap.put(eventID, (Map<String, Object>) dataSnapshot.getValue());
+                                    if (currI == dataSnapshot.getChildrenCount() - 2) {
+                                        Log.v(TAG, currI + "");
+                                        ViewEventListActivity.toEventList(eventsMap, eventsList, mAdapter);
+                                        mAdapter.notifyDataSetChanged();
+                                    }
                                 }
 
                                 @Override
@@ -166,10 +175,8 @@ public class EditProfile extends AppCompatActivity {
 
                                 }
                             });
+                            i++;
                         }
-                        ViewEventListActivity.toEventList(eventsMap, eventsList, mAdapter);
-                        mAdapter.notifyDataSetChanged();
-
                     }
 
                     @Override
