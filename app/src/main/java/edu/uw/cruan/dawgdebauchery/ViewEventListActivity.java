@@ -32,8 +32,8 @@ public class ViewEventListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_event_list);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
