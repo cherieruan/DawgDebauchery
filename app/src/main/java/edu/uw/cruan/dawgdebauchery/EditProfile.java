@@ -45,7 +45,7 @@ public class EditProfile extends AppCompatActivity {
     private EditText mLastName;
     private EditText mBio;
     private NetworkImageView mProfilePic;
-    private List<Event> eventsList = new ArrayList<Event>();
+    private List<Event> eventsList;
     private EventsAdapter mAdapter;
 
 
@@ -252,7 +252,7 @@ public class EditProfile extends AppCompatActivity {
     }
 
     private void setupEvents() {
-
+        eventsList = new ArrayList<Event>();
         FrameLayout listContainer = (FrameLayout) findViewById(R.id.my_events_container);
         LayoutInflater inflater = (LayoutInflater) getApplicationContext()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
