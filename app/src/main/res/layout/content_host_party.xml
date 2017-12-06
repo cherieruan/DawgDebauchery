@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="@dimen/activity_default_padding"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="edu.uw.cruan.dawgdebauchery.HostPartyActivity"
     tools:showIn="@layout/activity_host_party">
@@ -19,44 +20,73 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:padding="@dimen/activity_horizontal_margin"
+            android:textColor="#000000"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:textAlignment="center"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Description:"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:textSize="18sp"
             />
 
         <TextView
             android:id="@+id/event_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:padding="@dimen/activity_horizontal_margin"
             android:textSize="18sp"
-            android:textAlignment="center"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Address:"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:textSize="18sp"
             />
 
         <TextView
             android:id="@+id/event_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:padding="@dimen/activity_horizontal_margin"
-            android:textSize="15sp"
-            android:textAlignment="center"
+            android:textSize="18sp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Time:"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:textSize="18sp"
             />
 
         <TextView
             android:id="@+id/event_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:padding="@dimen/activity_horizontal_margin"
-            android:textSize="15sp"
-            android:textAlignment="center"
+            android:textSize="18sp"
             />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true">
 
         <Button
             android:id="@+id/edit_party_details"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Edit Party Details">
@@ -65,7 +95,7 @@
 
         <Button
             android:id="@+id/view_guest_list"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="View Guest List">
@@ -74,7 +104,7 @@
 
         <Button
             android:id="@+id/approve_guests"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Approve New Guests">
@@ -83,4 +113,4 @@
 
     </LinearLayout>
 
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>

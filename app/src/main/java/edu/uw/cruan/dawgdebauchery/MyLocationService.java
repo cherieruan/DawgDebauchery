@@ -199,7 +199,7 @@ public class MyLocationService extends Service
                                     builder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI);
                                 }
 
-                                Intent intent = new Intent(serviceThis, CreateEventActivity.class);
+                                Intent intent = new Intent(serviceThis, MapsActivity.class);
                                 TaskStackBuilder stackBuilder = TaskStackBuilder.create(serviceThis);
                                 stackBuilder.addParentStack(CreateEventActivity.class);
                                 stackBuilder.addNextIntent(intent);
