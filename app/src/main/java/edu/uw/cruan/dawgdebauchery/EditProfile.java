@@ -148,7 +148,7 @@ public class EditProfile extends AppCompatActivity {
 
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        DatabaseReference events = mDatabaseReference.child("events");
+                        final DatabaseReference events = mDatabaseReference.child("events");
                         final Map<String, Map<String, Object>> eventsMap = new HashMap();
                         int i = 0;
                         for(DataSnapshot event : dataSnapshot.getChildren()) {
@@ -160,10 +160,12 @@ public class EditProfile extends AppCompatActivity {
                                     Log.v(TAG, "CurrI: " + currI + ", childrenCount: " + dataSnapshot.getChildrenCount());
                                     eventsMap.put(eventID, (Map<String, Object>) dataSnapshot.getValue());
                                     ViewEventListActivity.toEventList(eventsMap, eventsList, mAdapter);
-                                    Set<Event> temp = new HashSet<>();
+                                    Set<Event> temp = new HashSet<Event>();
                                     temp.addAll(eventsList);
                                     eventsList.clear();
                                     eventsList.addAll(temp);
+                                    Log.v(TAG, temp.toString());
+                                    Log.v(TAG, eventsList.toString());
                                     mAdapter.notifyDataSetChanged();
                                 }
 
