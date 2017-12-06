@@ -419,7 +419,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if(currentLocation == null) {
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         }
-        
+
         //get the current location based on gps service
         this.currentLocation = position;
         LatLng newLocation = new LatLng(position.getLatitude(), position.getLongitude());
