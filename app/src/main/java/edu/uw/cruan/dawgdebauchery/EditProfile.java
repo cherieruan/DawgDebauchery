@@ -7,16 +7,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-<<<<<<< HEAD
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.LruCache;
 import android.view.LayoutInflater;
-=======
-import android.util.Log;
->>>>>>> 73a9e21d32ee0f96d23bac19facf97971e3416f4
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,7 +34,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.Inflater;
 
 public class EditProfile extends AppCompatActivity {
     private static final int PROFILE_PIC_INTENT = 16;
@@ -255,7 +248,7 @@ public class EditProfile extends AppCompatActivity {
 
         eventsContainer.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
-        mAdapter = new EventsAdapter(eventsList);
+        mAdapter = new EventsAdapter(this, eventsList);
         eventsContainer.setAdapter(mAdapter);
 
     }
