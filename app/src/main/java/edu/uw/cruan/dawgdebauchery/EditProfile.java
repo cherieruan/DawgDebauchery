@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -165,9 +165,7 @@ public class EditProfile extends AppCompatActivity {
                                 }
 
                                 @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
+                                public void onCancelled(DatabaseError databaseError) {}
                             });
                             i++;
                         }
@@ -266,5 +264,11 @@ public class EditProfile extends AppCompatActivity {
         mAdapter = new EventsAdapter(this, eventsList);
         eventsContainer.setAdapter(mAdapter);
 
+
+        DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(
+                eventsContainer.getContext(),
+                DividerItemDecoration.VERTICAL
+        );
+        eventsContainer.addItemDecoration(mDividerItemDecoration);
     }
 }

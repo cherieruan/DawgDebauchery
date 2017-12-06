@@ -16,6 +16,7 @@ public class Event {
     public String date;
     public String time;
     public String description;
+    public String id;
     public List<String> confirmedGuests;
     public Queue<String> pendingGuests;
     public boolean private_party;
@@ -24,12 +25,14 @@ public class Event {
 
     }
 
-    public Event(String name, String address, String date, String time, String description, boolean private_party) {
+    public Event(String name, String address, String date, String time, String description, String id,
+                 boolean private_party) {
         this.name = name;
         this.address = address;
         this.date = date;
         this.time = time;
         this.description = description;
+        this.id = id;
         this.private_party = private_party;
         confirmedGuests = new ArrayList<String>();
         pendingGuests = new LinkedList<String>();

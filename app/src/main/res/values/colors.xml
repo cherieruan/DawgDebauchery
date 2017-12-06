@@ -7,4 +7,5 @@
     <color name="aliceblue">#F0F8FF</color>
     <color name="pastelBlue">#C1F0F6</color>
     <color name="aquaRed">#DFA9A9</color>
+    <color name="light">#00ffff</color>
 </resources>

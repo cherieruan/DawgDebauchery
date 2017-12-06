@@ -417,7 +417,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if(currentLocation == null) {
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         }
-        
+
         //get the current location based on gps service
         this.currentLocation = position;
         LatLng newLocation = new LatLng(position.getLatitude(), position.getLongitude());
@@ -426,12 +426,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if(radiusOfCurrentLocation != null) {
             radiusOfCurrentLocation.remove();
         }
+        //draw the radius circle
         radiusOfCurrentLocation = mMap.addCircle(new CircleOptions()
                 .center(newLocation)
                 .radius(250)
                 .strokeColor(Color.TRANSPARENT)
                 .strokeWidth(2)
-                .fillColor(R.color.aliceblue)
+                .fillColor(0x220000FF)
                 .visible(true));
 
         //getInformationFromDataBase();
@@ -476,7 +477,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             .radius(350)
                             .strokeColor(Color.RED)
                             .strokeWidth(6)
-                            .fillColor(R.color.aquaRed)
+                            .fillColor(R.color.aliceblue)
                             .visible(true));
                 }
             }

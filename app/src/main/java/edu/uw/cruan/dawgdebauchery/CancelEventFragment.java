@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -45,8 +44,6 @@ public class CancelEventFragment extends DialogFragment {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 // Remove user from database list
                                 dataSnapshot.getRef().removeValue();
-                                Toast.makeText(getContext(), "Event Successfully Canceled.",
-                                        Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
@@ -70,10 +67,12 @@ public class CancelEventFragment extends DialogFragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Remove user from database list
                 Map<String, String> userIDs = (Map<String, String>) dataSnapshot.getValue();
-                for (String id : userIDs.keySet()) {
-                    String eventK = userIDs.get(id);
-                    if (eventK.equals(eventKey)) {
-                        mDatabase.child("Users").child(id).child("saved_events").child(eventK).removeValue();
+                if (userIDs != null) {
+                    for (String id : userIDs.keySet()) {
+                        String eventK = userIDs.get(id);
+                        if (eventK.equals(eventKey)) {
+                            mDatabase.child("Users").child(id).child("saved_events").child(eventK).removeValue();
+                        }
                     }
                 }
             }

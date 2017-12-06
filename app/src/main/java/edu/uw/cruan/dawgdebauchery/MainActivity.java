@@ -3,14 +3,13 @@ package edu.uw.cruan.dawgdebauchery;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.toolbox.NetworkImageView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -84,8 +83,9 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 LinearLayout main_create_event = (LinearLayout) findViewById(R.id.main_create_event);
                 TextView main_event_tv = (TextView) findViewById(R.id.main_event_tv);
-                if (dataSnapshot.getValue() != null) {
+                if (dataSnapshot.getValue() != null) {  // User has event
                     main_event_tv.setText("Manage Your Event");
+                    hasEvent = true;
                     main_create_event.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(intent);
                         }
                     });
-                } else {
+                } else {  // user doesn't have event
                     main_create_event.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -102,6 +102,12 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(intent);
                         }
                     });
+
+                    if (hasEvent) {
+                        Toast.makeText(getApplicationContext(), "Event Successfully Canceled.",
+                                Toast.LENGTH_SHORT).show();
+                        hasEvent = false;
+                    }
                 }
             }
 

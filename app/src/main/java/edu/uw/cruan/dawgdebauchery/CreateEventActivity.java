@@ -59,10 +59,11 @@ public class CreateEventActivity extends AppCompatActivity {
                     privacy = false;
                 }
 
-                Event newEvent = new Event(name, address, date.getText().toString(), time.getText().toString(), description, privacy);
                 //get the push key value
                 String eventKey = mDatabase.child("events").push().getKey();
                 //then you can write in that node in this way
+                Event newEvent = new Event(name, address, date.getText().toString(),
+                        time.getText().toString(), description, eventKey, privacy);
                 mDatabase.child("events").child(eventKey).setValue(newEvent);
 
                 FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
