@@ -28,6 +28,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -75,6 +76,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Circle radiusOfCurrentLocation;
 
     private DataSnapshot eventsSnapshot;
+
+    private boolean locationUpdatedFirstTime = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -413,6 +416,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //Place current location marker
         LatLng latLng = new LatLng(position.getLatitude(), position.getLongitude());
 
+        if(currentLocation == null) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        }
+        
         //get the current location based on gps service
         this.currentLocation = position;
         LatLng newLocation = new LatLng(position.getLatitude(), position.getLongitude());
@@ -547,6 +554,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     // Callback for location changed
     @Override
     public void onLocationChanged(Location location) {
+
         handleNewLocation(location);
     }
 
