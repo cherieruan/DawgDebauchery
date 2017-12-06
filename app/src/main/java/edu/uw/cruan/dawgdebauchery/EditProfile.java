@@ -11,6 +11,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -43,7 +45,6 @@ public class EditProfile extends AppCompatActivity {
     private EditText mLastName;
     private EditText mBio;
     private NetworkImageView mProfilePic;
-    private Button mCloseButton;
     private List<Event> eventsList = new ArrayList<Event>();
     private EventsAdapter mAdapter;
 
@@ -60,13 +61,6 @@ public class EditProfile extends AppCompatActivity {
         mLastName = (EditText) findViewById(R.id.last_name_container);
         mBio = (EditText) findViewById(R.id.bio_container);
 
-        mCloseButton = (Button) findViewById(R.id.profile_close_btn);
-        mCloseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveInfo();
-            }
-        });
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.choose_profile_pic);
@@ -184,6 +178,20 @@ public class EditProfile extends AppCompatActivity {
 
                     }
                 });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.edit_profile_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.save) {
+            saveInfo();
+        }
+        return true;
     }
 
     @Override
