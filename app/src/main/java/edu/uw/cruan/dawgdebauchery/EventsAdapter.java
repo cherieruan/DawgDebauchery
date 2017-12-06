@@ -67,7 +67,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
                                                 // Add event to user's interested events list
                                                 mDatabase.child("Users").child(uID).child("saved_events").push().setValue(eventKey);
                                             } else {  // event is private, check if invitation is pending
-                                                mDatabase.child("events").child(eventKey).child("pending").child(uID).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                mDatabase.child("events").child(eventKey).child("pending").addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
                                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                                         if (dataSnapshot.getValue() == null || !(((Map<String, String>) dataSnapshot.getValue()).values().contains(uID))) {  // Not pending, user added to pending list

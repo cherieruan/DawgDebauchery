@@ -10,22 +10,23 @@
 
     <com.android.volley.toolbox.NetworkImageView
         android:id="@+id/profile_picture"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
-        android:scaleType="fitXY"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:scaleType="fitEnd"
         android:src="@drawable/profile_default"
+        android:maxHeight="320dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.2"
+        app:layout_constraintVertical_bias="0.05"
         />
 
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/choose_profile_pic"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@id/profile_picture"
         app:layout_constraintTop_toBottomOf="@id/profile_picture"
         app:layout_constraintEnd_toEndOf="@id/profile_picture"
@@ -53,7 +54,7 @@
         android:minWidth="100dp"
         android:layout_marginBottom="12dp"
         android:layout_marginTop="12dp"
-        android:hint="Ninja"
+        android:hint="Danny"
         android:inputType="text"
         app:layout_constraintStart_toStartOf="@+id/bio_label"
         app:layout_constraintTop_toBottomOf="@+id/name_label"
@@ -78,7 +79,7 @@
         android:minWidth="100dp"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="12dp"
-        android:hint="Doe"
+        android:hint="Sexbang"
         android:inputType="text"
         app:layout_constraintStart_toStartOf="@+id/last_name_label"
         app:layout_constraintTop_toBottomOf="@+id/name_label"

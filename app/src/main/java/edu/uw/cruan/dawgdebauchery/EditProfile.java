@@ -1,21 +1,17 @@
 package edu.uw.cruan.dawgdebauchery;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.media.Image;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
-import android.util.LruCache;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -34,25 +30,38 @@ public class EditProfile extends AppCompatActivity {
     private static final int PROFILE_PIC_INTENT = 16;
     private DatabaseReference mDatabaseReference;
     private static final String TAG = "EditProfile";
+    private EditText mFirstName;
+    private EditText mLastName;
+    private EditText mBio;
+    private NetworkImageView mProfilePic;
+    private Button mCloseButton;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
-        final NetworkImageView profilePic = (NetworkImageView) findViewById(R.id.profile_picture);
-        profilePic.setDefaultImageResId(R.drawable.profile_default);
+        mProfilePic = (NetworkImageView) findViewById(R.id.profile_picture);
+        mProfilePic.setDefaultImageResId(R.drawable.profile_default);
 
-        Button closeButton = (Button) findViewById(R.id.profile_close_btn);
-        closeButton.setOnClickListener(new View.OnClickListener() {
+        mFirstName = (EditText) findViewById(R.id.name_container);
+        mLastName = (EditText) findViewById(R.id.last_name_container);
+        mBio = (EditText) findViewById(R.id.bio_container);
+
+        mCloseButton = (Button) findViewById(R.id.profile_close_btn);
+        mCloseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: save info and send user to MainActivity
+                saveInfo();
             }
         });
 
         mStorageReference = FirebaseStorage.getInstance().getReference();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.choose_profile_pic);
+
+//        fab.setImageResource(R.drawable.ic_edit_profile_pic);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,17 +77,17 @@ public class EditProfile extends AppCompatActivity {
 
         String uID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        mDatabaseReference.child("Users")
-                .child(uID)
-                .child("profile_pic")
+        DatabaseReference user =  mDatabaseReference.child("Users").child(uID);
+
+        user.child("imgUrl")
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Log.v(TAG, "Profile pic changed -> updating locally");
                         String imageURL = (String) dataSnapshot.getValue();
-                        profilePic.setImageUrl(imageURL,
+                        mProfilePic.setImageUrl(imageURL,
                                 RequestSingleton.getInstance(getApplicationContext()).imageLoader);
-                        
+
                     }
 
                     @Override
@@ -88,11 +97,35 @@ public class EditProfile extends AppCompatActivity {
                 });
 
         //TODO add event listeners for firstName, lastName, and bio to update editTexts
-        mDatabaseReference.child("Users").child(uID).child("firstName")
+        user.child("firstName")
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        mFirstName.setText((String) dataSnapshot.getValue());
+                    }
 
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+        user.child("lastName")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        mLastName.setText((String) dataSnapshot.getValue());
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+        user.child("bio")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        mBio.setText((String) dataSnapshot.getValue());
                     }
 
                     @Override
@@ -119,9 +152,11 @@ public class EditProfile extends AppCompatActivity {
             .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Log.v(TAG, "Returned image url: " + taskSnapshot.getDownloadUrl().toString());
                     DatabaseReference profile_pic = mDatabaseReference.child("Users")
                             .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                            .child("profile_pic");
+                            .child("imgUrl");
+                    profile_pic.setValue(taskSnapshot.getDownloadUrl().toString());
 
                     Log.v(TAG, "Uploaded Photo");
                 }
@@ -129,5 +164,31 @@ public class EditProfile extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        saveInfo();
+//        Toast.makeText(this, "NO!", Toast.LENGTH_SHORT).show();
+    }
 
+    private void saveInfo() {
+        boolean profileComplete = mFirstName.getText().toString().length() != 0
+                && mLastName.getText().toString().length() != 0
+                && mBio.getText().toString().length() != 0
+                && !mProfilePic.getDrawable().equals(getDrawable(R.drawable.profile_default));
+        if(profileComplete) {
+            Toast.makeText(this, "Saving profile...", Toast.LENGTH_SHORT).show();
+
+            String uID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+            DatabaseReference user = mDatabaseReference.child("Users").child(uID);
+            user.child("firstName").setValue(mFirstName.getText().toString());
+            user.child("lastName").setValue(mLastName.getText().toString());
+            user.child("bio").setValue(mBio.getText().toString());
+
+            startActivity(new Intent(this, MainActivity.class));
+        }else {
+            Toast.makeText(this, "Finish your profile, damnit!", Toast.LENGTH_SHORT).show();
+//                    "You must finish your profile before continuing!"
+        }
+    }
 }
