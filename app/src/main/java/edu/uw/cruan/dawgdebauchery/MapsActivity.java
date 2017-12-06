@@ -54,8 +54,6 @@ import java.util.Map;
 //TODO: Change API Key to be in release mode instead of debug mode
 //TODO: Prompt for runtime permission (and switch api level back to proper level)
 
-
-
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,

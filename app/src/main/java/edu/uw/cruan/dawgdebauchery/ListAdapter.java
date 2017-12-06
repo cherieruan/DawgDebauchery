@@ -2,12 +2,15 @@ package edu.uw.cruan.dawgdebauchery;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.android.volley.toolbox.NetworkImageView;
 
 import java.util.List;
 
@@ -37,11 +40,12 @@ public class ListAdapter extends ArrayAdapter<UserAccount> {
             v = vi.inflate(R.layout.guest_item, null);
         }
 
-        ImageView pic = (ImageView) v.findViewById(R.id.guest_pic);
+        NetworkImageView pic = (NetworkImageView) v.findViewById(R.id.guest_pic);
         TextView name = (TextView) v.findViewById(R.id.guest_name);
 
         if (pic != null) {
-            pic.setImageURI(Uri.parse(data.get(position).imgURL));
+            Log.v(TAG, ""+data.get(position).imgURL);
+            pic.setImageUrl(Uri.parse(data.get(position).imgURL).toString(), RequestSingleton.getInstance(this.getContext().getApplicationContext()).imageLoader);
         }
 
         if (name != null) {
