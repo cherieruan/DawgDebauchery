@@ -29,6 +29,7 @@
                 android:layout_toRightOf="@id/create_event_set_time_button"
                 android:layout_centerInParent="true"
                 android:textStyle="bold"
+                android:textSize="24sp"
                 />
             <Button
                 android:id="@+id/create_event_set_time_button"
@@ -52,6 +53,7 @@
                 android:layout_toRightOf="@id/create_event_set_date_button"
                 android:layout_centerInParent="true"
                 android:textStyle="bold"
+                android:textSize="24sp"
                 />
             <Button
                 android:id="@+id/create_event_set_date_button"
