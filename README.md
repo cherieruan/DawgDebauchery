@@ -7,4 +7,4 @@ be notified that they are passing an event, with the event details and the optio
 Events can either be public or private. For private events, users can request an invitation for the
 event host to approve. If a user wishes to host an event, they can post their event with details
 on this application for others to view and save. If they wish to host a private event, they can approve
-and disapprove invitation requests from other users, in a Tinder-like fashion. 
+and disapprove invitation requests from other users, in a Tinder-like fashion.

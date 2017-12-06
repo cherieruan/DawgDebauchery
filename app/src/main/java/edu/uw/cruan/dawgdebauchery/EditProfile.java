@@ -157,7 +157,7 @@ public class EditProfile extends AppCompatActivity {
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     Log.v(TAG, "CurrI: " + currI + ", childrenCount: " + dataSnapshot.getChildrenCount());
                                     eventsMap.put(eventID, (Map<String, Object>) dataSnapshot.getValue());
-                                    if (currI == dataSnapshot.getChildrenCount() - 2) {
+                                    if (currI == dataSnapshot.getChildrenCount() - 1) {
                                         Log.v(TAG, currI + "");
                                         ViewEventListActivity.toEventList(eventsMap, eventsList, mAdapter);
                                         mAdapter.notifyDataSetChanged();
