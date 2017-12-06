@@ -80,10 +80,12 @@
             android:label="@string/title_activity_view_guests"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".EditProfile" />
+
         <activity
             android:name=".EditEventActivity"
             android:label="@string/title_activity_edit_event"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".ViewEventListActivity"
             android:label="@string/title_activity_view_event_list"

@@ -41,4 +41,5 @@
 
     <string name="title_activity_edit_event">EditEventActivity</string>
     <string name="title_activity_view_event_list">ViewEventListActivity</string>
+    <string name="title_activity_event">EventActivity</string>
 </resources>

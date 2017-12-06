@@ -1,22 +1,22 @@
 package edu.uw.cruan.dawgdebauchery;
 
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.media.Image;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.LruCache;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -30,8 +30,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class EditProfile extends AppCompatActivity {
-    private StorageReference mStorageReference;
     private static final int PROFILE_PIC_INTENT = 16;
     private DatabaseReference mDatabaseReference;
     private static final String TAG = "EditProfile";
@@ -40,6 +44,8 @@ public class EditProfile extends AppCompatActivity {
     private EditText mBio;
     private NetworkImageView mProfilePic;
     private Button mCloseButton;
+    private List<Event> eventsList = new ArrayList<Event>();
+    private EventsAdapter mAdapter;
 
 
 
@@ -62,7 +68,6 @@ public class EditProfile extends AppCompatActivity {
             }
         });
 
-        mStorageReference = FirebaseStorage.getInstance().getReference();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.choose_profile_pic);
 
@@ -76,6 +81,8 @@ public class EditProfile extends AppCompatActivity {
                 startActivityForResult(intent, PROFILE_PIC_INTENT);
             }
         });
+
+        setupEvents();
 
 
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
@@ -101,7 +108,7 @@ public class EditProfile extends AppCompatActivity {
                     }
                 });
 
-        //TODO add event listeners for firstName, lastName, and bio to update editTexts
+
         user.child("firstName")
                 .addValueEventListener(new ValueEventListener() {
                     @Override
@@ -130,7 +137,39 @@ public class EditProfile extends AppCompatActivity {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.v(TAG, "Bio changed: " + dataSnapshot.getValue());
                         mBio.setText((String) dataSnapshot.getValue());
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+        user.child("saved_events")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        DatabaseReference events = mDatabaseReference.child("events");
+                        final Map<String, Map<String, Object>> eventsMap = new HashMap();
+                        for(DataSnapshot event : dataSnapshot.getChildren()) {
+                            final String eventID = (String) event.getValue();
+                            events.child(eventID).addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    eventsMap.put(eventID, (Map<String, Object>) dataSnapshot);
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
+                        ViewEventListActivity.toEventList(eventsMap, eventsList, mAdapter);
+                        mAdapter.notifyDataSetChanged();
+
                     }
 
                     @Override
@@ -146,7 +185,9 @@ public class EditProfile extends AppCompatActivity {
         if(requestCode == PROFILE_PIC_INTENT && resultCode == RESULT_OK) {
             Log.v(TAG, "Retrieved Photo");
             Uri uri = data.getData();
-            StorageReference filePath = mStorageReference.child("photos").child(uri.getLastPathSegment());
+
+            StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+            StorageReference filePath = storageReference.child("photos").child(uri.getLastPathSegment());
             filePath.putFile(uri).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
@@ -195,5 +236,20 @@ public class EditProfile extends AppCompatActivity {
             Toast.makeText(this, "Finish your profile, damnit!", Toast.LENGTH_SHORT).show();
 //                    "You must finish your profile before continuing!"
         }
+    }
+
+    private void setupEvents() {
+
+        FrameLayout listContainer = (FrameLayout) findViewById(R.id.my_events_container);
+        LayoutInflater inflater = (LayoutInflater) getApplicationContext()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        RecyclerView eventsContainer = (RecyclerView) inflater.inflate(R.layout.content_view_event_list, listContainer)
+                .findViewById(R.id.recycler_view);
+
+        eventsContainer.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+
+        mAdapter = new EventsAdapter(this, eventsList);
+        eventsContainer.setAdapter(mAdapter);
+
     }
 }
