@@ -250,45 +250,48 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         ValueEventListener valueListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                if(currentLocation != null) {
 
-                for(DataSnapshot eventSnapShot: dataSnapshot.getChildren()) {
-                    Event event = (Event) eventSnapShot.getValue(Event.class);
-                    LatLng location = getLocationFromAddress(event.address);
-                    if(location == null) {
-                        continue;
-                    }
-                    if(event.private_party == false) {
 
-                        //show events only under 1km radius
-                        boolean visibility;
-                        float[] distance = new float[5];
-
-                        Location.distanceBetween(currentLocation.getLatitude(), currentLocation.getLongitude(),
-                                location.latitude, location.longitude, distance);
-                        if(distance[0] < 250) {
-                            visibility = true;
-                        } else {
-                            visibility = false;
+                    for(DataSnapshot eventSnapShot: dataSnapshot.getChildren()) {
+                        Event event = (Event) eventSnapShot.getValue(Event.class);
+                        LatLng location = getLocationFromAddress(event.address);
+                        if (location == null) {
+                            continue;
                         }
+                        if (event.private_party == false) {
 
-                        StringBuilder description = new StringBuilder();
-                        description.append("Date: " + event.date + "\n");
-                        description.append("Time: " + event.time + "\n");
-                        description.append("Address: " + event.address + "\n");
-                        mMap.addMarker(new MarkerOptions()
-                                .position(location)
-                                .title(event.description)
-                                .snippet(description.toString())
-                                .visible(visibility));
-                    } else {
-                        //we draw the private events
-                        Circle circle = mMap.addCircle(new CircleOptions()
-                                .center(location)
-                                .radius(350)
-                                .strokeColor(Color.RED)
-                                .strokeWidth(6)
-                                .fillColor(R.color.aquaRed)
-                                .visible(true));
+                            //show events only under 1km radius
+                            boolean visibility;
+                            float[] distance = new float[5];
+
+                            Location.distanceBetween(currentLocation.getLatitude(), currentLocation.getLongitude(),
+                                    location.latitude, location.longitude, distance);
+                            if (distance[0] < 250) {
+                                visibility = true;
+                            } else {
+                                visibility = false;
+                            }
+
+                            StringBuilder description = new StringBuilder();
+                            description.append("Date: " + event.date + "\n");
+                            description.append("Time: " + event.time + "\n");
+                            description.append("Address: " + event.address + "\n");
+                            mMap.addMarker(new MarkerOptions()
+                                    .position(location)
+                                    .title(event.description)
+                                    .snippet(description.toString())
+                                    .visible(visibility));
+                        } else {
+                            //we draw the private events
+                            Circle circle = mMap.addCircle(new CircleOptions()
+                                    .center(location)
+                                    .radius(350)
+                                    .strokeColor(Color.RED)
+                                    .strokeWidth(6)
+                                    .fillColor(R.color.aquaRed)
+                                    .visible(true));
+                        }
                     }
                 }
 
