@@ -6,7 +6,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
@@ -72,13 +71,15 @@ public class ViewEventListActivity extends AppCompatActivity {
                                EventsAdapter adapter) {
         for (String eventKey : eventsMap.keySet()) {
             Map<String, Object> event = eventsMap.get(eventKey);
-            Event e = new Event((String) event.get("name"), (String) event.get("address"), (String) event.get("date"),
-                                (String) event.get("time"), (String) event.get("description"),
-                                eventKey,
-                                (Boolean) event.get("private_party"));
-            eventsList.add(e);
+            if (event != null) {
+                Event e = new Event((String) event.get("name"), (String) event.get("address"), (String) event.get("date"),
+                        (String) event.get("time"), (String) event.get("description"),
+                        eventKey,
+                        (Boolean) event.get("private_party"));
+                eventsList.add(e);
+                adapter.notifyDataSetChanged();
+            }
         }
-        adapter.notifyDataSetChanged();
     }
 
 

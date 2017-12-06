@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class EditProfile extends AppCompatActivity {
     private static final int PROFILE_PIC_INTENT = 16;
@@ -46,7 +45,7 @@ public class EditProfile extends AppCompatActivity {
     private EditText mLastName;
     private EditText mBio;
     private NetworkImageView mProfilePic;
-    private List<Event> eventsList;
+    private List<Event> eventsList = new ArrayList<Event>();
     private EventsAdapter mAdapter;
 
 
@@ -158,8 +157,10 @@ public class EditProfile extends AppCompatActivity {
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     Log.v(TAG, "CurrI: " + currI + ", childrenCount: " + dataSnapshot.getChildrenCount());
                                     eventsMap.put(eventID, (Map<String, Object>) dataSnapshot.getValue());
-                                    ViewEventListActivity.toEventList(eventsMap, eventsList, mAdapter);
-                                    mAdapter.notifyDataSetChanged();
+                                        Log.v(TAG, currI + "");
+                                        ViewEventListActivity.toEventList(eventsMap, eventsList, mAdapter);
+                                        mAdapter.notifyDataSetChanged();
+
                                 }
 
                                 @Override
@@ -206,18 +207,18 @@ public class EditProfile extends AppCompatActivity {
                     Toast.makeText(EditProfile.this, "Failed to upload photo", Toast.LENGTH_SHORT).show();
                 }
             })
-            .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Log.v(TAG, "Returned image url: " + taskSnapshot.getDownloadUrl().toString());
-                    DatabaseReference profile_pic = mDatabaseReference.child("Users")
-                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                            .child("imgUrl");
-                    profile_pic.setValue(taskSnapshot.getDownloadUrl().toString());
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Log.v(TAG, "Returned image url: " + taskSnapshot.getDownloadUrl().toString());
+                            DatabaseReference profile_pic = mDatabaseReference.child("Users")
+                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                    .child("imgUrl");
+                            profile_pic.setValue(taskSnapshot.getDownloadUrl().toString());
 
-                    Log.v(TAG, "Uploaded Photo");
-                }
-            });
+                            Log.v(TAG, "Uploaded Photo");
+                        }
+                    });
         }
     }
 
@@ -250,7 +251,7 @@ public class EditProfile extends AppCompatActivity {
     }
 
     private void setupEvents() {
-        eventsList = new ArrayList<Event>();
+
         FrameLayout listContainer = (FrameLayout) findViewById(R.id.my_events_container);
         LayoutInflater inflater = (LayoutInflater) getApplicationContext()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
