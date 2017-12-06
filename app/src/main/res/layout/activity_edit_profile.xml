@@ -107,14 +107,6 @@
 
 
 
-    <Button
-        android:id="@+id/profile_close_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="12dp"
-        android:text="@string/profile_close_btn_txt"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
 
     <FrameLayout
         android:id="@+id/my_events_container"

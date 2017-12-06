@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -116,6 +117,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
         holder.date.setText(event.date);
         holder.time.setText(event.time);
         holder.description.setText(event.description);
+        if (!event.private_party) {  // public party
+            holder.priv.setText("public");
+            holder.icon.setImageResource(R.drawable.ic_add_black_24dp);
+        } else {
+            holder.priv.setText("private");
+            holder.icon.setImageResource(R.drawable.ic_email_black_24dp);
+        }
     }
 
 
@@ -125,7 +133,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView name, date, time, description;
+        public TextView name, date, time, description, priv;
+        public ImageView icon;
 
         public MyViewHolder(View view) {
             super(view);
@@ -133,6 +142,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
             date = (TextView) view.findViewById(R.id.event_list_date);
             time = (TextView) view.findViewById(R.id.event_list_time);
             description = (TextView) view.findViewById(R.id.event_list_description);
+            priv = (TextView) view.findViewById(R.id.event_list_private);
+            icon = (ImageView) view.findViewById(R.id.event_list_icon);
         }
 
     }

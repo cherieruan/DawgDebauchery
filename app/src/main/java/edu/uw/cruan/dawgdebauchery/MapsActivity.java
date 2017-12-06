@@ -21,12 +21,14 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -35,6 +37,7 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -44,6 +47,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 //TODO: Refactor code into service
 //TODO: prompt user for file name at beginning and put into filename field or sharedpreference
@@ -64,13 +68,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     private LocationRequest mLocationRequest;
     private String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-
     //Firebase database reference
     private DatabaseReference mDatabase;
 
     private Location currentLocation;
 
     private Circle radiusOfCurrentLocation;
+
+    private DataSnapshot eventsSnapshot;
+
+    private boolean locationUpdatedFirstTime = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,107 +153,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-//        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
-//        {
-//
-//            @Override
-//            public boolean onMarkerClick(Marker arg0) {
-//                Intent intent = new Intent(MapsActivity.this, PartyDescriptionActivity.class);
-//                startActivity(intent);
-//                return true;
-//            }
-//
-//        });
-
         //For now we put all the below code into getInformationFromDataBase(), because we want to change
         //visibility of events every time a change of location is produced. So in this way, it is easier
         //to access the databse and display its information, instead of calling onMapReady()
         getInformationFromDataBase();
-//        ValueEventListener valueListener = new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                for(DataSnapshot eventSnapShot: dataSnapshot.getChildren()) {
-//                    Event event = (Event) eventSnapShot.getValue(Event.class);
-//                    LatLng location = getLocationFromAddress(event.address);
-//                    if(event.private_party == false) {
-//
-//                        //show events only under 1km radius
-//                        boolean visibility;
-//                        float[] distance = new float[5];
-//                        Location.distanceBetween(currentLocation.getLatitude(), currentLocation.getLongitude(),
-//                                location.latitude, location.longitude, distance);
-//                        if(distance[0] < 250) {
-//                            visibility = true;
-//                        } else {
-//                            visibility = false;
-//                        }
-//
-//                        StringBuilder description = new StringBuilder();
-//                        description.append("Date: " + event.date + "\n");
-//                        description.append("Time: " + event.time + "\n");
-//                        description.append("Address: " + event.address + "\n");
-//                        mMap.addMarker(new MarkerOptions()
-//                                .position(location)
-//                                .title(event.description)
-//                                .snippet(description.toString())
-//                                .visible(visibility));
-//                    } else {
-//                        //we draw the private events
-//                        Circle circle = mMap.addCircle(new CircleOptions()
-//                        .center(location)
-//                        .radius(350)
-//                        .strokeColor(Color.RED)
-//                        .strokeWidth(6)
-//                        .fillColor(R.color.aquaRed)
-//                        .visible(true));
-//                    }
-//
-//                    Log.w(TAG, "HOLA");
-//                }
-//
-//                mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-//
-//                    @Override
-//                    public View getInfoWindow(Marker arg0) {
-//                        return null;
-//                    }
-//
-//                    @Override
-//                    public View getInfoContents(Marker marker) {
-//
-//                        LinearLayout info = new LinearLayout(MapsActivity.this);
-//                        info.setOrientation(LinearLayout.VERTICAL);
-//
-//                        TextView title = new TextView(MapsActivity.this);
-//                        title.setTextColor(Color.BLACK);
-//                        title.setGravity(Gravity.CENTER);
-//                        title.setTypeface(null, Typeface.BOLD);
-//                        title.setText(marker.getTitle());
-//
-//                        TextView snippet = new TextView(MapsActivity.this);
-//                        snippet.setTextColor(Color.GRAY);
-//                        snippet.setText(marker.getSnippet());
-//
-//                        info.addView(title);
-//                        info.addView(snippet);
-//
-//                        return info;
-//                    }
-//                });
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                Log.w(TAG, "loadEvent:onCancelled", databaseError.toException());
-//            }
-//
-//
-//
-//        };
-//
-//        //add the listener to the events group of the database
-//        mDatabase.child("events").addValueEventListener(valueListener);
+
 
         // TODO When we are building out the marker clicking system we have to build our own view and inflate it in place of the other view
     }
@@ -255,6 +166,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         ValueEventListener valueListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                eventsSnapshot = dataSnapshot;
+
                 if(currentLocation != null) {
 
 
@@ -282,9 +195,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             description.append("Date: " + event.date + "\n");
                             description.append("Time: " + event.time + "\n");
                             description.append("Address: " + event.address + "\n");
+                            description.append("Click me to assist!");
                             mMap.addMarker(new MarkerOptions()
                                     .position(location)
-                                    .title(event.description)
+                                    .title("Public: " + event.description)
                                     .snippet(description.toString())
                                     .visible(visibility));
                         } else {
@@ -298,6 +212,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     .visible(true));
                         }
                     }
+                    //make each marker info window clickable
+                    mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+
+                        @Override
+                        public void onInfoWindowClick(Marker marker) {
+                            if(marker.getTitle().startsWith("Public")) {
+
+                                //register the user to the event
+                                registerEventToUserVersion2(marker);
+
+                            }
+                            Log.d(TAG, marker.getTitle());
+                        }
+                    });
                 }
 
                 mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
@@ -329,6 +257,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         return info;
                     }
                 });
+
+
             }
 
             @Override
@@ -344,6 +274,93 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mDatabase.child("events").addValueEventListener(valueListener);
     }
 
+    public void registerEventToUser(final Marker marker) {
+
+        ValueEventListener valueListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot eventSnapShot : dataSnapshot.getChildren()) {
+                    Event event = (Event) eventSnapShot.getValue(Event.class);
+                    Log.w(TAG, marker.getTitle().substring(8));
+                    if (event.description.equals(marker.getTitle().substring(8))) {
+                        final String eventKey = eventSnapShot.getKey();
+                        final String uID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                        mDatabase.child("Users").child(uID).child("saved_events").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                if(dataSnapshot.getValue() == null || !(((Map<String, String>) dataSnapshot.getValue()).values().contains(eventKey))) {
+                                    mDatabase.child("Users").child(uID).child("saved_events").push().setValue(eventKey);
+                                    mDatabase.child("events").child(eventKey).child("attendees").push().setValue(uID);
+                                    toast("Great! You just joined this event as attendee!");
+
+                                } else {
+                                    toast("You are already enrolled as attendee");
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "loadEvents:onCancelled", databaseError.toException());
+
+
+            }
+        };
+        mDatabase.child("events").addValueEventListener(valueListener);
+
+    }
+
+    private void toast(String message) {
+        Toast toast = Toast.makeText(MapsActivity.this, message, Toast.LENGTH_SHORT);
+        TextView v = (TextView)toast.getView().findViewById(android.R.id.message);
+        v.setGravity(Gravity.CENTER);
+        toast.show();
+    }
+
+    public void registerEventToUserVersion2(Marker marker) {
+        for(DataSnapshot eventSnapShot : eventsSnapshot.getChildren()) {
+            Event event = (Event) eventSnapShot.getValue(Event.class);
+            Log.w(TAG, marker.getTitle().substring(8));
+            if (event.description.equals(marker.getTitle().substring(8))) {
+                final String eventKey = eventSnapShot.getKey();
+                final String uID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                mDatabase.child("Users").child(uID).child("saved_events").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        if(dataSnapshot.getValue() == null || !(((Map<String, String>) dataSnapshot.getValue()).values().contains(eventKey))) {
+                            mDatabase.child("Users").child(uID).child("saved_events").push().setValue(eventKey);
+                            mDatabase.child("events").child(eventKey).child("attendees").push().setValue(uID);
+                            toast("Great! You just joined this event as attendee!");
+
+                        } else {
+                            toast("You are already enrolled as attendee");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+            }
+        }
+
+    }
 
     //Converts and address to a LatLng object
     private LatLng getLocationFromAddress(String address) {
@@ -394,16 +411,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     // Update map to given location
-    private void handleNewLocation(Location location) {
+    private void handleNewLocation(Location position) {
 
         //Place current location marker
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        LatLng latLng = new LatLng(position.getLatitude(), position.getLongitude());
 
+        if(currentLocation == null) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        }
+        
         //get the current location based on gps service
-        this.currentLocation = location;
-        LatLng newLocation = new LatLng(location.getLatitude(), location.getLongitude());
+        this.currentLocation = position;
+        LatLng newLocation = new LatLng(position.getLatitude(), position.getLongitude());
 
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(newLocation));
 
         if(radiusOfCurrentLocation != null) {
             radiusOfCurrentLocation.remove();
@@ -416,9 +436,98 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .fillColor(R.color.aliceblue)
                 .visible(true));
 
-        getInformationFromDataBase();
+        //getInformationFromDataBase();
+
+        ///////new modification to read from local reference of database
+        //we have to make interaction we database faster --> V2.0
+        if(eventsSnapshot != null) {
+            for (DataSnapshot eventSnapShot : eventsSnapshot.getChildren()) {
+                Event event = (Event) eventSnapShot.getValue(Event.class);
+                LatLng location = getLocationFromAddress(event.address);
+                if (location == null) {
+                    continue;
+                }
+                if (event.private_party == false) {
+
+                    //show events only under 1km radius
+                    boolean visibility;
+                    float[] distance = new float[5];
+
+                    Location.distanceBetween(currentLocation.getLatitude(), currentLocation.getLongitude(),
+                            location.latitude, location.longitude, distance);
+                    if (distance[0] < 250) {
+                        visibility = true;
+                    } else {
+                        visibility = false;
+                    }
+
+                    StringBuilder description = new StringBuilder();
+                    description.append("Date: " + event.date + "\n");
+                    description.append("Time: " + event.time + "\n");
+                    description.append("Address: " + event.address + "\n");
+                    description.append("Click me to assist!");
+                    mMap.addMarker(new MarkerOptions()
+                            .position(location)
+                            .title("Public: " + event.description)
+                            .snippet(description.toString())
+                            .visible(visibility));
+                } else {
+                    //we draw the private events
+                    Circle circle = mMap.addCircle(new CircleOptions()
+                            .center(location)
+                            .radius(350)
+                            .strokeColor(Color.RED)
+                            .strokeWidth(6)
+                            .fillColor(R.color.aquaRed)
+                            .visible(true));
+                }
+            }
+            //make each marker info window clickable
+            mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+
+                @Override
+                public void onInfoWindowClick(Marker marker) {
+                    if (marker.getTitle().startsWith("Public")) {
+
+                        //register the user to the event
+                        registerEventToUserVersion2(marker);
+
+                    }
+                    Log.d(TAG, marker.getTitle());
+                }
+            });
 
 
+            mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+                @Override
+                public View getInfoWindow(Marker arg0) {
+                    return null;
+                }
+
+                @Override
+                public View getInfoContents(Marker marker) {
+
+                    LinearLayout info = new LinearLayout(MapsActivity.this);
+                    info.setOrientation(LinearLayout.VERTICAL);
+
+                    TextView title = new TextView(MapsActivity.this);
+                    title.setTextColor(Color.BLACK);
+                    title.setGravity(Gravity.CENTER);
+                    title.setTypeface(null, Typeface.BOLD);
+                    title.setText(marker.getTitle());
+
+                    TextView snippet = new TextView(MapsActivity.this);
+                    snippet.setTextColor(Color.GRAY);
+                    snippet.setText(marker.getSnippet());
+
+                    info.addView(title);
+                    info.addView(snippet);
+
+                    return info;
+                }
+            });
+        }
 
     }
 
@@ -445,6 +554,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     // Callback for location changed
     @Override
     public void onLocationChanged(Location location) {
+
         handleNewLocation(location);
     }
 
@@ -452,7 +562,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onResume() {
         super.onResume();
-        if (mRequestingLocationUpdates) {  // if drawing,
+        if (mRequestingLocationUpdates) {
             startLocationUpdates();
         }
     }
