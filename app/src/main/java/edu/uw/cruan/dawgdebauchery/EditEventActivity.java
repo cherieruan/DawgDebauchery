@@ -131,9 +131,12 @@ public class EditEventActivity extends AppCompatActivity {
 
                 Log.v(TAG, String.valueOf(privacy));
 
-                final Event newEvent = new Event(name, address, dateView.getText().toString(), timeView.getText().toString(), description, privacy);
 
                 DatabaseReference databaseRef = mDatabase.child("Users").child(UID).child("eventKey");
+                String eventKey = databaseRef.getKey();
+                final Event newEvent = new Event(name, address, dateView.getText().toString(),
+                        timeView.getText().toString(), description, eventKey, privacy);
+
                 databaseRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {

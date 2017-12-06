@@ -62,10 +62,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         if (dataSnapshot.getValue() == null || !(((Map<String, String>) dataSnapshot.getValue()).values().contains(eventKey))) {
                                             if (!event.private_party) {  // Add user to event's attending list
-                                                mDatabase.child("events").child(eventKey).child("attendees").push().setValue(uID);
+                                             /*   mDatabase.child("events").child(eventKey).child("attendees").push().setValue(uID);
                                                 Toast.makeText(mCtx, "Added to guest list.",
                                                         Toast.LENGTH_SHORT).show();
-                                                // Add event to user's interested events list
+                                               */ // Add event to user's interested events list
                                                 mDatabase.child("Users").child(uID).child("saved_events").push().setValue(eventKey);
                                             } else {  // event is private, check if invitation is pending
                                                 mDatabase.child("events").child(eventKey).child("pending").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -87,8 +87,8 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
                                                 });
                                             }
                                         } else {
-                                            Toast.makeText(mCtx, "Already attending this event.",
-                                                    Toast.LENGTH_SHORT).show();
+                                            /*Toast.makeText(mCtx, "Already attending this event.",
+                                                    Toast.LENGTH_SHORT).show(); */
                                         }
                                     }
 
@@ -111,8 +111,11 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
     }
 
     @Override
-    public void onBindViewHolder(EventsAdapter.MyViewHolder holder, int position) {
-        Event event = eventsList.get(position);
+    public void onBindViewHolder(final EventsAdapter.MyViewHolder holder, int position) {
+        final Event event = eventsList.get(position);
+
+
+
         holder.name.setText(event.name);
         holder.date.setText(event.date);
         holder.time.setText(event.time);
@@ -124,6 +127,26 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
             holder.priv.setText("private");
             holder.icon.setImageResource(R.drawable.ic_email_black_24dp);
         }
+        mDatabase.child("Users")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child("saved_events").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot eventSnapshot : dataSnapshot.getChildren()) {
+                    if(event.id.equals(eventSnapshot.getValue())) {
+                        holder.priv.setText("attending");
+                        holder.icon.setVisibility(View.INVISIBLE);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
 
