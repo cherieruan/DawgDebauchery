@@ -74,6 +74,7 @@ public class ViewEventListActivity extends AppCompatActivity {
             Map<String, Object> event = eventsMap.get(eventKey);
             Event e = new Event((String) event.get("name"), (String) event.get("address"), (String) event.get("date"),
                                 (String) event.get("time"), (String) event.get("description"),
+                                eventKey,
                                 (Boolean) event.get("private_party"));
             eventsList.add(e);
         }
