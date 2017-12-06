@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -16,17 +17,20 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
 public class HostTinderActivity extends AppCompatActivity {
 
-    public static final String TAG = "Tinder Activity";
+    public static final String TAG = "HostTinderActivity";
     public Map<String, String> eventMap;
     public String eventKey;
-    public Queue<String> pending;
-    public List<String> confirmed;
+    public Queue<String> pending = new LinkedList<>();
+    public List<String> confirmed = new ArrayList<>();
     public String currUserID;
     public UserAccount user;
     public DatabaseReference mDatabase;
@@ -45,8 +49,14 @@ public class HostTinderActivity extends AppCompatActivity {
             mDatabase.child("events").child(eventKey).child("pending").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    pending = (Queue<String>) dataSnapshot.getValue();
-                    if (pending == null) {
+                    HashMap<String,String> hashmap = (HashMap<String,String>) dataSnapshot.getValue();
+                    if (hashmap != null) {
+                        for (String key : hashmap.keySet()) {
+                            Log.v(TAG, hashmap.get(key));
+                            pending.add(hashmap.get(key));
+                        }
+                    }
+                    if (pending.isEmpty()) {
                         displayEmptyPage();
                     } else {
                         displayUser();
@@ -60,6 +70,25 @@ public class HostTinderActivity extends AppCompatActivity {
             noButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    mDatabase.child("events").child(eventKey).child("pending").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            HashMap<String,String> userMap = (HashMap<String, String>) dataSnapshot.getValue();
+                            if (userMap != null) {
+                                for (String key : userMap.keySet()) {
+                                    Log.v(TAG, "Curr User ID: " + currUserID);
+                                    if (userMap.get(key).equals(currUserID)) {
+                                        Log.v(TAG, "Key:  " + key);
+                                        mDatabase.child("events").child(eventKey).child("pending").child(key).removeValue();
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {}
+                    });
                     displayUser();
                 }
             });
@@ -69,7 +98,26 @@ public class HostTinderActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     confirmed.add(currUserID);
-                    mDatabase.child("events").child(eventKey).push().setValue(currUserID); //add to the list
+                    mDatabase.child("events").child(eventKey).child("attendees").push().setValue(currUserID); //add to the list
+                    mDatabase.child("events").child(eventKey).child("pending").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            HashMap<String,String> userMap = (HashMap<String, String>) dataSnapshot.getValue();
+                            if (userMap != null) {
+                                for (String key : userMap.keySet()) {
+                                    Log.v(TAG, "Curr User ID: " + currUserID);
+                                    if (userMap.get(key).equals(currUserID)) {
+                                        Log.v(TAG, "Key:  " + key);
+                                        mDatabase.child("events").child(eventKey).child("pending").child(key).removeValue();
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {}
+                    });
                     displayUser();
                 }
             });
@@ -81,22 +129,23 @@ public class HostTinderActivity extends AppCompatActivity {
             displayEmptyPage();
         } else {
             currUserID = pending.remove();
+            Log.v(TAG, "CurrentUserID: "+currUserID);
             mDatabase.child("Users").child(currUserID).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    user = (UserAccount) dataSnapshot.getValue();
-                    // Remove user from database list
-                    dataSnapshot.getRef().removeValue();
+                    HashMap<String,String> userMap = (HashMap<String, String>) dataSnapshot.getValue();
+                    //user = (UserAccount) dataSnapshot.getValue();
+                    NetworkImageView imgView = (NetworkImageView) findViewById(R.id.user_img);
+                    imgView.setImageUrl(userMap.get("imgUrl"), RequestSingleton.getInstance(getApplicationContext()).imageLoader);
+                    TextView txtView = (TextView) findViewById(R.id.invite_text);
+                    txtView.setText("Invite " + userMap.get("firstName").toString() + "?");
+//                    // Remove user from database list
+//                    dataSnapshot.getRef().removeValue();
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {}
             });
-            NetworkImageView imgView = (NetworkImageView) findViewById(R.id.user_img);
-            imgView.setImageUrl(Uri.parse(user.imgURL).toString(), RequestSingleton.getInstance(getApplicationContext()).imageLoader);
-
-            TextView txtView = (TextView) findViewById(R.id.invite_text);
-            txtView.setText("Invite " + user.fName + "?");
         }
     }
 
