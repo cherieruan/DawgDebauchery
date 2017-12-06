@@ -66,6 +66,8 @@ public class EditProfile extends AppCompatActivity {
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.choose_profile_pic);
 
+//        fab.setImageResource(R.drawable.ic_edit_profile_pic);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -112,7 +114,7 @@ public class EditProfile extends AppCompatActivity {
 
                     }
                 });
-        user.child("bio")
+        user.child("lastName")
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
