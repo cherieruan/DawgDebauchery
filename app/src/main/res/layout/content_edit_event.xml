@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="@dimen/activity_default_padding"
-    android:fillViewport="true"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="edu.uw.cruan.dawgdebauchery.CreateEventActivity"
-    tools:showIn="@layout/activity_create_event">
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:padding="@dimen/activity_default_padding"
+android:fillViewport="true"
+app:layout_behavior="@string/appbar_scrolling_view_behavior"
+tools:context="edu.uw.cruan.dawgdebauchery.EditEventActivity"
+tools:showIn="@layout/activity_edit_event">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,10 +29,9 @@
                 android:layout_toRightOf="@id/create_event_set_time_button"
                 android:layout_centerInParent="true"
                 android:textStyle="bold"
-                android:textSize="24sp"
                 />
             <Button
-                android:id="@+id/create_event_set_time_button"
+                android:id="@+id/edit_event_set_time_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="onSetTimeButtonClicked"
@@ -53,10 +52,9 @@
                 android:layout_toRightOf="@id/create_event_set_date_button"
                 android:layout_centerInParent="true"
                 android:textStyle="bold"
-                android:textSize="24sp"
                 />
             <Button
-                android:id="@+id/create_event_set_date_button"
+                android:id="@+id/edit_event_set_date_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="onSetDateButtonClicked"
@@ -70,7 +68,7 @@
             android:layout_marginBottom="@dimen/activity_default_padding">
 
             <TextView
-                android:id="@+id/create_event_privacy_label"
+                android:id="@+id/edit_event_privacy_label"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_centerVertical="true"
@@ -79,10 +77,10 @@
                 />
 
             <Spinner
-                android:id="@+id/create_event_privacy"
+                android:id="@+id/edit_event_privacy"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/create_event_privacy_label"
+                android:layout_toRightOf="@id/edit_event_privacy_label"
                 android:entries="@array/public_private"
                 android:prompt="@string/privacy_prompt">
 
@@ -91,7 +89,7 @@
         </RelativeLayout>
 
         <EditText
-            android:id="@+id/create_event_address"
+            android:id="@+id/edit_event_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/activity_default_padding"
@@ -99,7 +97,7 @@
             android:width="@dimen/edit_text_field_width_default"/>
 
         <EditText
-            android:id="@+id/create_event_name"
+            android:id="@+id/edit_event_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/activity_default_padding"
@@ -107,7 +105,7 @@
             android:width="@dimen/edit_text_field_width_default"/>
 
         <EditText
-            android:id="@+id/create_event_description"
+            android:id="@+id/edit_event_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Description"
@@ -116,11 +114,12 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/create_event_next"
+        android:id="@+id/edit_event_next"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:text="Create Event"/>
+        android:text="Edit Event"/>
 
 </android.support.constraint.ConstraintLayout>
+

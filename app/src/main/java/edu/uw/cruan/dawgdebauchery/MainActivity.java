@@ -4,12 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.NetworkImageView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -30,17 +33,37 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        Button main_view_map = (Button) this.findViewById(R.id.main_view_map);
-        Button main_view_events_list = (Button) this.findViewById(R.id.main_view_events_list);
-        Button main_edit_profile = (Button) this.findViewById(R.id.main_edit_profile);
+        LinearLayout main_view_map = (LinearLayout) this.findViewById(R.id.main_view_map);
+        LinearLayout main_view_events_list = (LinearLayout) this.findViewById(R.id.main_view_events_list);
+        LinearLayout main_edit_profile = (LinearLayout) this.findViewById(R.id.main_edit_profile);
+        final NetworkImageView main_profile_pic = (NetworkImageView) findViewById(R.id.main_profile_pic);
 
         // Set current user
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         userUID = user.getUid();
+
+        DatabaseReference userRef =  mDatabase.child("Users").child(userUID);
+
+        userRef.child("imgUrl")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.v(TAG, "Profile pic changed -> updating locally");
+                        String imageURL = (String) dataSnapshot.getValue();
+                        main_profile_pic.setImageUrl(imageURL,
+                                RequestSingleton.getInstance(getApplicationContext()).imageLoader);
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
         // Grab name from database
         mDatabase.child("Users").child(userUID).child("firstName").addValueEventListener(new ValueEventListener() {
@@ -59,9 +82,10 @@ public class MainActivity extends AppCompatActivity {
         mDatabase.child("Users").child(userUID).child("eventKey").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Button main_create_event = (Button) findViewById(R.id.main_create_event);
+                LinearLayout main_create_event = (LinearLayout) findViewById(R.id.main_create_event);
+                TextView main_event_tv = (TextView) findViewById(R.id.main_event_tv);
                 if (dataSnapshot.getValue() != null) {
-                    main_create_event.setText("MANAGE YOUR EVENT");
+                    main_event_tv.setText("Manage Your Event");
                     main_create_event.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
