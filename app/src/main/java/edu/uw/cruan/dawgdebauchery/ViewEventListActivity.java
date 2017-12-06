@@ -3,10 +3,10 @@ package edu.uw.cruan.dawgdebauchery;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -37,13 +37,19 @@ public class ViewEventListActivity extends AppCompatActivity {
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
-        mAdapter = new EventsAdapter(eventsList);
+        mAdapter = new EventsAdapter(this, eventsList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
         prepareData();
+
+        DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(
+                recyclerView.getContext(),
+                DividerItemDecoration.VERTICAL
+        );
+        recyclerView.addItemDecoration(mDividerItemDecoration);
     }
 
     private void prepareData() {
@@ -51,7 +57,6 @@ public class ViewEventListActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 eventsMap = (Map<String, Map<String, Object>>) dataSnapshot.getValue();
-                Log.v(TAG, eventsMap.toString());
                 toEventList();
             }
 
