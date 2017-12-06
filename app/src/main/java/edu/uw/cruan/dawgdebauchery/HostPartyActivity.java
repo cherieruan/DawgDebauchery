@@ -113,6 +113,19 @@ public class HostPartyActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        findViewById(R.id.cancel_event).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putString("eventKey", eventKey);
+                bundle.putString("uid", userID);
+                CancelEventFragment alertdFragment = new CancelEventFragment();
+                alertdFragment.setArguments(bundle);
+                // Show Alert DialogFragment
+                alertdFragment.show(getSupportFragmentManager(), "Alert Dialog Fragment");
+            }
+        });
     }
 
 }

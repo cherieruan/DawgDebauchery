@@ -14,6 +14,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,9 +24,9 @@ public class ViewGuestsActivity extends AppCompatActivity {
     public static final String TAG = "ViewGuests";
     //firebase!
     private DatabaseReference mDatabase;
-    private List<String> attendees;
+    private HashMap<String,String> attendees;
     private List<UserAccount> attendeeAccounts = new ArrayList<UserAccount>();
-    private int i;
+    private int i = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +42,7 @@ public class ViewGuestsActivity extends AppCompatActivity {
         mDatabase.child("events").child(eventKey).child("attendees").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                attendees = (List<String>) dataSnapshot.getValue();
+                attendees = (HashMap<String, String>) dataSnapshot.getValue();
                 if (attendees == null) {
                     findViewById(R.id.no_guests).setVisibility(View.VISIBLE);
                 } else {
@@ -55,8 +56,9 @@ public class ViewGuestsActivity extends AppCompatActivity {
     }
 
     private void toView() {
-        for (i = 0; i < attendees.size(); i++) {
-            String UID = attendees.get(i);
+        for (String key : attendees.keySet()) {
+            String UID = attendees.get(key);
+            Log.v(TAG, UID);
             mDatabase.child("Users").child(UID).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -64,7 +66,9 @@ public class ViewGuestsActivity extends AppCompatActivity {
                     attendeeAccounts.add(new UserAccount(userMap.get("firstName"), userMap.get("lastName"),
                             userMap.get("imgUrl")));
                     //Log.v(TAG, UID);
-                    if (i == attendees.size()) {
+                    Log.v(TAG, ""+i);
+                    if (i == attendees.keySet().size()) {
+                        Log.v(TAG, "Setting adapter");
                         setAdapter();
                     }
                 }
@@ -72,6 +76,7 @@ public class ViewGuestsActivity extends AppCompatActivity {
                 @Override
                 public void onCancelled(DatabaseError databaseError) {}
             });
+            i++;
         }
     }
 

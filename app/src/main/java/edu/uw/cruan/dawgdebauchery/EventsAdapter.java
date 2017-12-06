@@ -117,10 +117,11 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
         holder.date.setText(event.date);
         holder.time.setText(event.time);
         holder.description.setText(event.description);
-        holder.priv.setText(String.valueOf(event.private_party));
         if (!event.private_party) {  // public party
+            holder.priv.setText("public");
             holder.icon.setImageResource(R.drawable.ic_add_black_24dp);
         } else {
+            holder.priv.setText("private");
             holder.icon.setImageResource(R.drawable.ic_email_black_24dp);
         }
     }
