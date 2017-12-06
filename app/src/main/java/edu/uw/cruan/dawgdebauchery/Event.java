@@ -98,14 +98,6 @@ public class Event {
         this.confirmedGuests = confirmedGuests;
     }
 
-    @Override
-    public boolean equals(Object other) {
-        if (other instanceof Event) {
-            return this.name.equals(((Event) other).name);
-        }else {
-            return false;
-        }
-    }
 
     public void setPendingGuests(Queue<String> pendingGuests) {
         this.pendingGuests = pendingGuests;
