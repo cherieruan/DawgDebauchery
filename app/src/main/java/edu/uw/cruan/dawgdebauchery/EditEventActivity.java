@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -46,6 +47,25 @@ public class EditEventActivity extends AppCompatActivity {
         final TextView dateView = (TextView) findViewById(R.id.create_event_set_date_text_view);
         final TextView timeView = (TextView) findViewById(R.id.create_event_set_time_text_view);
         final Spinner spinner = (Spinner) findViewById(R.id.edit_event_privacy);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                String selectedItem = parent.getItemAtPosition(position).toString();
+                if(selectedItem.equals("Private")) {
+                    Log.v(TAG, "Setting selection to true");
+                    spinner.setSelection(1);
+                } else {
+                    Log.v(TAG, "Setting selection to false");
+                    spinner.setSelection(0);
+                }
+            } // to close the onItemSelected
+            public void onNothingSelected(AdapterView<?> parent)
+            {
+
+            }
+        });
 
         FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         final String UID = currentFirebaseUser.getUid();
@@ -107,7 +127,7 @@ public class EditEventActivity extends AppCompatActivity {
                 String name = edit_event_name.getText().toString();
 
                 boolean privacy;
-                if (spinner.getSelectedItem().toString() == "Private") {
+                if (spinner.getSelectedItem().toString().equals("Private")) {
                     privacy = true;
                 } else {
                     privacy = false;

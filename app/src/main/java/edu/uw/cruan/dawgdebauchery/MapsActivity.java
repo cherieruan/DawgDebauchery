@@ -2,6 +2,7 @@ package edu.uw.cruan.dawgdebauchery;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -97,6 +98,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //get a reference to the database
         mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        // Launch location notification service
+        Intent intent = new Intent(this, MyLocationService.class);
+        startService(intent);
 
     }
 
