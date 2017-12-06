@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.NetworkImageView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -84,7 +85,6 @@ public class HostTinderActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     user = (UserAccount) dataSnapshot.getValue();
-
                     // Remove user from database list
                     dataSnapshot.getRef().removeValue();
                 }
@@ -92,8 +92,8 @@ public class HostTinderActivity extends AppCompatActivity {
                 @Override
                 public void onCancelled(DatabaseError databaseError) {}
             });
-            ImageView imgView = (ImageView) findViewById(R.id.user_img);
-            imgView.setImageURI(Uri.parse(user.imgURL));
+            NetworkImageView imgView = (NetworkImageView) findViewById(R.id.user_img);
+            imgView.setImageUrl(Uri.parse(user.imgURL).toString(), RequestSingleton.getInstance(getApplicationContext()).imageLoader);
 
             TextView txtView = (TextView) findViewById(R.id.invite_text);
             txtView.setText("Invite " + user.fName + "?");
