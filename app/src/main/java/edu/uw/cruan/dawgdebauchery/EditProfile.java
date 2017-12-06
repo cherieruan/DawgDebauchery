@@ -34,8 +34,10 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class EditProfile extends AppCompatActivity {
     private static final int PROFILE_PIC_INTENT = 16;
@@ -158,6 +160,10 @@ public class EditProfile extends AppCompatActivity {
                                     Log.v(TAG, "CurrI: " + currI + ", childrenCount: " + dataSnapshot.getChildrenCount());
                                     eventsMap.put(eventID, (Map<String, Object>) dataSnapshot.getValue());
                                     ViewEventListActivity.toEventList(eventsMap, eventsList, mAdapter);
+                                    Set<Event> temp = new HashSet<>();
+                                    temp.addAll(eventsList);
+                                    eventsList.clear();
+                                    eventsList.addAll(temp);
                                     mAdapter.notifyDataSetChanged();
                                 }
 
